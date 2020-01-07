@@ -8,7 +8,8 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
-js-sys = "0.3.33"
+libmath = "0.1.4"
+rand = "0.6.5"
 wasm-bindgen = "0.2.56"
 
 [dependencies.web-sys]
@@ -19,4 +20,9 @@ features = [
   'Element',
   'HtmlCanvasElement',
   'Window',
+  'console'
 ]
+
+[[bin]]
+name = "main2"
+path = "src/func.rs"
