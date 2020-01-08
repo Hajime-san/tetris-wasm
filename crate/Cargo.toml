@@ -26,3 +26,7 @@ features = [
 [[bin]]
 name = "main2"
 path = "src/func.rs"
+
+[[bin]]
+name = "main3"
+path = "src/data.rs"

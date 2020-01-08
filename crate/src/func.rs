@@ -1,6 +1,5 @@
 use math::round;
 use std::f64::consts::PI;
-use std::f64::{NAN, NEG_INFINITY};
 // use rand::seq::SliceRandom;
 // use rand::thread_rng;
 mod data;
@@ -105,6 +104,8 @@ fn main() {
   println!("{:?} is num", num);
   println!("{:?} is rect", rect);
   println!("{} is rotated position", update);
+
+  println!("{:?}", data::BLOCKS[0].number);
 
   // let choices = [1, 2, 4, 8, 16, 32];
   // let mut rng = thread_rng();
