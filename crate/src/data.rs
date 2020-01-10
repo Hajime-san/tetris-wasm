@@ -1,5 +1,7 @@
 pub struct Number {}
 impl Number {
+    pub const EMPTY: i32 = -1;
+    pub const CURRENT: i32 = 99;
     pub const ROW: i32 = 10;
     pub const COLUMN: i32 = 16;
     pub const A: i32 = 4;
