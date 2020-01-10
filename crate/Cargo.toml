@@ -24,9 +24,17 @@ features = [
 ]
 
 [[bin]]
-name = "main2"
+name = "func"
 path = "src/func.rs"
 
 [[bin]]
-name = "main3"
+name = "data"
 path = "src/data.rs"
+
+[[bin]]
+name = "state"
+path = "src/state.rs"
+
+[[bin]]
+name = "controll"
+path = "src/controll.rs"

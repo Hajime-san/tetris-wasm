@@ -2,6 +2,11 @@ use std::f64;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
+mod controll;
+mod data;
+mod func;
+mod state;
+
 #[wasm_bindgen(start)]
 pub fn start() {
     let document = web_sys::window().unwrap().document().unwrap();
