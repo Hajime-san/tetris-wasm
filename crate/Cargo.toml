@@ -22,19 +22,3 @@ features = [
   'Window',
   'console'
 ]
-
-[[bin]]
-name = "func"
-path = "src/func.rs"
-
-[[bin]]
-name = "data"
-path = "src/data.rs"
-
-[[bin]]
-name = "state"
-path = "src/state.rs"
-
-[[bin]]
-name = "controll"
-path = "src/controll.rs"

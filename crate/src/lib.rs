@@ -2,10 +2,9 @@ use std::f64;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
-mod controll;
-mod data;
-mod func;
-mod state;
+pub mod func;
+pub mod state;
+pub mod store;
 
 #[wasm_bindgen(start)]
 pub fn start() {

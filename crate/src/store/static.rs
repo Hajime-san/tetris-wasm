@@ -28,6 +28,14 @@ impl Text {
     pub const DOWN: &'static str = "down";
 }
 
+#[derive(Debug)]
+pub struct Prop {
+    pub number: BlockPosition,
+    pub color: &'static str,
+}
+
+pub type BlockPosition = [i32; 4];
+
 pub const BLOCKS: [Prop; 7] = [
     Prop {
         number: O_NUMBER,
@@ -58,14 +66,6 @@ pub const BLOCKS: [Prop; 7] = [
         color: Z_COLOR,
     },
 ];
-
-#[derive(Debug)]
-pub struct Prop {
-    pub number: BlockPosition,
-    pub color: &'static str,
-}
-
-pub type BlockPosition = [i32; 4];
 
 pub const FIELD_LENGTH: i32 = Number::ROW * Number::COLUMN;
 

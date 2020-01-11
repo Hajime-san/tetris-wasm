@@ -1,8 +1,7 @@
 use math::round;
 use std::f64::consts::PI;
 
-#[path = "data.rs"]
-mod data;
+use crate::store;
 
 // for compare the first digit between field and a block
 pub fn fix_digit(num: i32) -> i32 {
@@ -10,7 +9,7 @@ pub fn fix_digit(num: i32) -> i32 {
         panic!("parameter {} is not a natural number", num);
     }
 
-    if num < data::Number::DEGREES {
+    if num < store::r#static::Number::DEGREES {
         return num;
     }
 
@@ -56,7 +55,7 @@ pub fn translate_number_to_rect(num: i32, center: i32) -> [i32; 2] {
 }
 
 pub fn rotate_matrix(rect: [i32; 2]) -> [i32; 2] {
-    const RADIANS: f64 = (PI / 180.0) * data::Number::DEGREES as f64;
+    const RADIANS: f64 = (PI / 180.0) * store::r#static::Number::DEGREES as f64;
     let cos = RADIANS.cos() as i32;
     let sin = RADIANS.sin() as i32;
     let nx = (cos * (rect[0] - 0)) + (sin * (rect[1] - 0));
@@ -68,23 +67,23 @@ pub fn translate_rect_to_num(mat2: [i32; 2]) -> i32 {
     let point: i32;
 
     if mat2[0] == 0 && mat2[1] > 0 {
-        point = -(mat2[1] * data::Number::ROW);
+        point = -(mat2[1] * store::r#static::Number::ROW);
     } else if mat2[0] == 0 && mat2[1] < 0 {
-        point = -(mat2[1] * data::Number::ROW);
+        point = -(mat2[1] * store::r#static::Number::ROW);
     } else if mat2[0] == 0 && mat2[1] > 0 {
-        point = mat2[1] * data::Number::ROW;
+        point = mat2[1] * store::r#static::Number::ROW;
     } else if mat2[0] > 0 && mat2[1] == 0 {
         point = mat2[0];
     } else if mat2[0] < 0 && mat2[1] == 0 {
         point = mat2[0];
     } else if mat2[0] > 0 && mat2[1] > 0 {
-        point = -(mat2[1] * data::Number::ROW) + mat2[0];
+        point = -(mat2[1] * store::r#static::Number::ROW) + mat2[0];
     } else if mat2[0] > 0 && mat2[1] < 0 {
-        point = -(mat2[1] * data::Number::ROW) + mat2[0];
+        point = -(mat2[1] * store::r#static::Number::ROW) + mat2[0];
     } else if mat2[0] < 0 && mat2[1] > 0 {
-        point = -(mat2[1] * data::Number::ROW) + mat2[0];
+        point = -(mat2[1] * store::r#static::Number::ROW) + mat2[0];
     } else if mat2[0] < 0 && mat2[1] < 0 {
-        point = -(mat2[1] * data::Number::ROW) + mat2[0];
+        point = -(mat2[1] * store::r#static::Number::ROW) + mat2[0];
     } else if mat2[0] == 0 && mat2[1] == 0 {
         point = 0;
 
@@ -112,5 +111,5 @@ fn main() {
     println!("{:?} is rect", rect);
     println!("{} is rotated position", update);
 
-    println!("{:?}", data::BLOCKS[0].number);
+    println!("{:?}", store::r#static::BLOCKS[0].number);
 }
