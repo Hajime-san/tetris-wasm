@@ -67,10 +67,6 @@ pub const BLOCKS: [Prop; 7] = [
     },
 ];
 
-pub const FIELD_LENGTH: i32 = Number::ROW * Number::COLUMN;
-
-pub type Field = Vec<i32>;
-
 // O-block
 pub const O_NUMBER: BlockPosition = [
     Number::A,
@@ -134,6 +130,4 @@ pub const Z_NUMBER: BlockPosition = [
 ];
 pub const Z_COLOR: &'static str = "rgba(237, 56, 51, 1)";
 
-fn main() {
-    println!("{:?}", BLOCKS);
-}
+fn main() {}

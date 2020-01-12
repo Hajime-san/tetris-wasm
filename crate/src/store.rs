@@ -1,2 +1,2 @@
-pub mod dynamic;
-pub mod r#static;
+pub mod dynamics;
+pub mod statics;
