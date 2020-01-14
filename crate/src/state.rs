@@ -26,7 +26,7 @@ impl Movable {
             }
         }
 
-        return flag;
+        flag
     }
 }
 

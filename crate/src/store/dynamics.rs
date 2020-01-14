@@ -1,8 +1,6 @@
 use math::round;
 use rand::seq::SliceRandom;
 use rand::{thread_rng, Rng};
-use serde::{Deserialize, Serialize};
-use serde_json::Result;
 use std::convert::TryInto;
 
 use crate::store;
@@ -30,7 +28,8 @@ pub struct Config {
 fn default_field_value() -> Vec<i32> {
     let mut f = Vec::with_capacity(FIELD_LENGTH.try_into().unwrap());
     f = vec![store::statics::Number::EMPTY; FIELD_LENGTH.try_into().unwrap()];
-    return f;
+
+    f
 }
 
 fn default_queue_field_value() -> Vec<i32> {
@@ -45,7 +44,8 @@ fn default_queue_field_value() -> Vec<i32> {
             .try_into()
             .unwrap()
     ];
-    return q;
+
+    q
 }
 
 pub fn default_queue_value() -> Vec<i32> {
@@ -53,7 +53,7 @@ pub fn default_queue_value() -> Vec<i32> {
     let mut rng = thread_rng();
     queue.shuffle(&mut rng);
 
-    return queue;
+    queue
 }
 
 impl Default for Config {
@@ -97,7 +97,7 @@ impl Update for Config {
                     .gen_range(0, &store::statics::BLOCKS.len())
                     .try_into()
                     .unwrap();
-                return r;
+                r
             }
 
             while true {
@@ -109,7 +109,7 @@ impl Update for Config {
                 }
             }
         }
-        return queue;
+        queue
     }
 }
 

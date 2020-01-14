@@ -10,7 +10,7 @@ pub fn fix_digit(num: i32) -> i32 {
     }
 
     if num < store::statics::Number::DEGREES {
-        return num;
+        num;
     }
 
     let mut m_num: f64 = num as f64;
@@ -31,7 +31,7 @@ pub fn fix_digit(num: i32) -> i32 {
 
     let result: i32 = num % fixed_num as i32;
 
-    return result;
+    result
 }
 
 pub fn translate_number_to_rect(num: i32, center: i32) -> [i32; 2] {
@@ -51,7 +51,7 @@ pub fn translate_number_to_rect(num: i32, center: i32) -> [i32; 2] {
         rect = [fix_digit(num) - fix_digit(center), -2];
     }
 
-    return rect;
+    rect
 }
 
 pub fn rotate_matrix(rect: [i32; 2]) -> [i32; 2] {
@@ -60,7 +60,8 @@ pub fn rotate_matrix(rect: [i32; 2]) -> [i32; 2] {
     let sin = RADIANS.sin() as i32;
     let nx = (cos * (rect[0] - 0)) + (sin * (rect[1] - 0));
     let ny = (cos * (rect[1] - 0)) - (sin * (rect[0] - 0));
-    return [nx, ny];
+
+    [nx, ny]
 }
 
 pub fn translate_rect_to_num(mat2: [i32; 2]) -> i32 {
@@ -92,7 +93,7 @@ pub fn translate_rect_to_num(mat2: [i32; 2]) -> i32 {
         point = 0;
     }
 
-    return point;
+    point
 }
 
 #[cfg(test)]
