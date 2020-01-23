@@ -9,6 +9,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 libmath = "0.1.4"
+arraytools = "0.1.5"
 rand = "0.6.5"
 wasm-bindgen = "0.2.56"
 

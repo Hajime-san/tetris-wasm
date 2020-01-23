@@ -10,7 +10,7 @@ pub fn fix_digit(num: i32) -> i32 {
     }
 
     if num < store::statics::Number::DEGREES {
-        num;
+        return num;
     }
 
     let mut m_num: f64 = num as f64;
