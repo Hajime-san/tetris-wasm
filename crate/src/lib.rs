@@ -47,3 +47,18 @@ pub fn start() {
 
     context.stroke();
 }
+
+#[cfg(test)]
+mod tests {
+
+    use super::store;
+    use super::store::dynamics::field::Field as _Field;
+    #[test]
+    fn some_test() {
+        let mut options: _Field = Default::default();
+
+        options.numbers[0] = 999;
+
+        println!("{:?}", options.numbers);
+    }
+}

@@ -27,40 +27,6 @@ pub struct Field {
     pub remain_row_numbers: Vec<i32>,
 }
 
-pub struct _Field {
-    pub numbers: Vec<i32>,
-}
-
-#[derive(Debug)]
-pub struct Block {
-    pub positions: store::statics::BlockPosition,
-    pub angle: i32,
-    pub number: i32,
-}
-
-#[derive(Debug)]
-pub struct BlockTransfer {
-    pub single_row: Vec<[i32; store::statics::Number::ROW as usize]>,
-    pub complete_row_numbers: Vec<i32>,
-    pub remain_row: Vec<[i32; store::statics::Number::ROW as usize]>,
-    pub remain_row_numbers: Vec<i32>,
-}
-
-#[derive(Debug)]
-pub struct Queue {
-    pub numbers: Vec<i32>,
-    pub line: Vec<i32>,
-}
-
-#[derive(Debug)]
-pub struct Level {
-    pub count: i32,
-    pub completed_row: i32,
-    pub speed: i32,
-    pub difficulty: i32,
-    pub score: i32,
-}
-
 fn default_field_value() -> Vec<i32> {
     let mut f = Vec::with_capacity(FIELD_LENGTH.try_into().unwrap());
     f = vec![store::statics::Number::EMPTY; FIELD_LENGTH.try_into().unwrap()];
@@ -268,32 +234,32 @@ impl Update for Field {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::store;
+// #[cfg(test)]
+// mod tests {
+//     use super::store;
 
-    use super::Field;
+//     use super::Field;
 
-    use super::Update;
+//     use super::Update;
 
-    #[test]
-    fn some_test() {
-        let mut options: Field = Default::default();
+//     #[test]
+//     fn some_test() {
+//         let mut options: Field = Default::default();
 
-        let queue = options.create_queue();
+//         let queue = options.create_queue();
 
-        options.single_row = vec![[99, -1, 1, 1, 1, 1, 1, 1, 1, 1]];
+//         options.single_row = vec![[99, -1, 1, 1, 1, 1, 1, 1, 1, 1]];
 
-        options.delete_row();
+//         options.delete_row();
 
-        options.current = options.move_current("down").unwrap();
+//         options.current = options.move_current("down").unwrap();
 
-        options.transfer_current(options.current);
+//         options.transfer_current(options.current);
 
-        options.transfer_to_fix();
+//         options.transfer_to_fix();
 
-        println!("{:?}", options.field);
-    }
-}
+//         println!("{:?}", options.field);
+//     }
+// }
 
 pub fn main() {}
