@@ -129,5 +129,3 @@ pub const Z_NUMBER: BlockPosition = [
     Number::A + (Number::ROW * 2),
 ];
 pub const Z_COLOR: &'static str = "rgba(237, 56, 51, 1)";
-
-fn main() {}

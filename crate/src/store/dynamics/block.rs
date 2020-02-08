@@ -6,7 +6,7 @@ use crate::store;
 pub struct Block {
     pub positions: store::statics::BlockPosition,
     pub angle: i32,
-    pub class: i32,
+    pub block_type: i32,
 }
 
 trait Update {
@@ -25,7 +25,7 @@ impl Default for Block {
         Self {
             positions: [5, 6, 14, 15],
             angle: 0,
-            class: 0,
+            block_type: 0,
         }
     }
 }
@@ -62,10 +62,10 @@ impl Update for Block {
     }
 
     fn transfer_to_fix(&mut self, mut field: Vec<i32>) {
-        let mut iter_field = field.clone();
+        let iter_field = field.clone();
         for (i, v) in iter_field.iter().enumerate() {
             if *v == store::statics::Number::CURRENT {
-                field[i as usize] = self.class;
+                field[i as usize] = self.block_type;
             }
         }
     }

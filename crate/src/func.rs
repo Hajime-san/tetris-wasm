@@ -111,5 +111,3 @@ mod tests {
         // println!("{} is rotated position", update);
     }
 }
-
-fn main() {}
