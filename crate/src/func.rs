@@ -9,7 +9,7 @@ pub fn fix_digit(num: i32) -> i32 {
         panic!("parameter {} is not a natural number", num);
     }
 
-    if num < store::statics::Number::DEGREES {
+    if num < store::statics::Number::ROW {
         return num;
     }
 
@@ -102,12 +102,12 @@ mod tests {
 
     #[test]
     fn test() {
-        // let num = translate_number_to_rect(16, 15);
-        // let rect = rotate_matrix(num);
-        // let update = translate_rect_to_num(rect);
+        let num = translate_number_to_rect(5, 15);
+        let rect = rotate_matrix(num);
+        let update = translate_rect_to_num(rect);
 
-        // println!("{:?} is num", num);
-        // println!("{:?} is rect", rect);
-        // println!("{} is rotated position", update);
+        println!("{:?} is num", num);
+        println!("{:?} is rect", rect);
+        println!("{} is rotated position", update);
     }
 }

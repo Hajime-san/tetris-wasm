@@ -19,6 +19,14 @@ impl Number {
     pub const QUEUE_COLUMN: i32 = 8;
 }
 
+#[derive(Debug, PartialEq)]
+pub enum Angle {
+    Initial = 0,
+    Right = Number::DEGREES as isize,
+    Down = (Number::DEGREES * 2) as isize,
+    Left = (Number::DEGREES * 3) as isize,
+}
+
 pub struct Text {}
 impl Text {
     pub const EMPTY: &'static str = "empty";
@@ -35,6 +43,17 @@ pub struct Prop {
 }
 
 pub type BlockPosition = [i32; 4];
+
+// #[derive(Debug)]
+// pub enum BlockName {
+//     O_mino = 0,
+//     I_mino = 1,
+//     J_mino = 2,
+//     L_mino = 3,
+//     T_mino = 4,
+//     S_mino = 5,
+//     Z_mino = 6,
+// }
 
 pub const BLOCKS: [Prop; 7] = [
     Prop {
