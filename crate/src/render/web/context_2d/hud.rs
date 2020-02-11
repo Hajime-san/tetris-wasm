@@ -2,6 +2,16 @@ use std::f64;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(a: &str);
+}
+
+macro_rules! console_log {
+    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+}
+
 #[wasm_bindgen(start)]
 pub fn start() {
     let document = web_sys::window().unwrap().document().unwrap();
@@ -10,6 +20,9 @@ pub fn start() {
         .dyn_into::<web_sys::HtmlCanvasElement>()
         .map_err(|_| ())
         .unwrap();
+
+    canvas.set_width(400);
+    canvas.set_height(600);
 
     let context = canvas
         .get_context("2d")
