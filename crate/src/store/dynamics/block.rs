@@ -1,5 +1,4 @@
 use arraytools::ArrayTools;
-use std::iter::IntoIterator;
 
 use crate::func;
 use crate::store;
@@ -8,11 +7,11 @@ use crate::store;
 pub struct Block {
     pub positions: store::statics::BlockPosition,
     pub angle: store::statics::Angle,
-    pub block_type: i32,
+    pub block_type: store::statics::BlockName,
 }
 
-trait Update {
-    fn transfer_to_fix(&mut self, mut field: Vec<i32>);
+pub trait Update {
+    fn transfer_to_fix(&self, mut field: Vec<i32>);
     fn clear_current(&mut self, mut field: Vec<i32>);
     fn move_current(&mut self, dir: &str) -> Result<store::statics::BlockPosition, ()>;
     fn transfer_current(
@@ -20,8 +19,8 @@ trait Update {
         current_block: store::statics::BlockPosition,
         mut field: Vec<i32>,
     );
-    fn update_angle(&mut self);
-    fn crate_rotate_block(&self, fix: bool) -> store::statics::BlockPosition;
+    fn reverse_angle(&mut self);
+    fn crate_rotate_block(&mut self, fix: bool) -> store::statics::BlockPosition;
 }
 
 impl Default for Block {
@@ -29,7 +28,7 @@ impl Default for Block {
         Self {
             positions: [5, 6, 14, 15],
             angle: store::statics::Angle::Right,
-            block_type: 5,
+            block_type: store::statics::BlockName::O_mino,
         }
     }
 }
@@ -65,39 +64,48 @@ impl Update for Block {
         }
     }
 
-    fn transfer_to_fix(&mut self, mut field: Vec<i32>) {
+    fn transfer_to_fix(&self, mut field: Vec<i32>) {
         let iter_field = field.clone();
         for (i, v) in iter_field.iter().enumerate() {
             if *v == store::statics::Number::CURRENT {
-                field[i as usize] = self.block_type;
+                field[i as usize] = self.block_type as i32;
             }
         }
     }
 
-    fn update_angle(&mut self) {
+    // when failure to rotate
+    fn reverse_angle(&mut self) {
+        match self.angle {
+            store::statics::Angle::Initial => self.angle = store::statics::Angle::Left,
+            store::statics::Angle::Right => self.angle = store::statics::Angle::Initial,
+            store::statics::Angle::Down => self.angle = store::statics::Angle::Right,
+            store::statics::Angle::Left => self.angle = store::statics::Angle::Down,
+        }
+    }
+
+    fn crate_rotate_block(&mut self, fix: bool) -> store::statics::BlockPosition {
+        // update angle
         match self.angle {
             store::statics::Angle::Initial => self.angle = store::statics::Angle::Right,
             store::statics::Angle::Right => self.angle = store::statics::Angle::Down,
             store::statics::Angle::Down => self.angle = store::statics::Angle::Left,
             store::statics::Angle::Left => self.angle = store::statics::Angle::Initial,
         }
-    }
 
-    fn crate_rotate_block(&self, fix: bool) -> store::statics::BlockPosition {
         // position of organization point
         let mut center = 0;
         // fix position after rotated
         let mut fix_position = 0;
 
         match self.block_type {
-            0 => {
+            store::statics::BlockName::O_mino => {
                 if fix {
                     self.positions
                 } else {
-                    store::statics::BLOCKS[0].number
+                    store::statics::BLOCKS[store::statics::BlockName::O_mino as usize].number
                 };
             }
-            1 => {
+            store::statics::BlockName::I_mino => {
                 center = 1;
 
                 match self.angle {
@@ -106,7 +114,7 @@ impl Update for Block {
                     _ => fix_position = 1,
                 }
             }
-            2 => {
+            store::statics::BlockName::J_mino => {
                 fix_position = 0;
 
                 match self.angle {
@@ -115,7 +123,7 @@ impl Update for Block {
                     _ => center = 1,
                 }
             }
-            3 => {
+            store::statics::BlockName::L_mino => {
                 fix_position = 0;
 
                 match self.angle {
@@ -125,7 +133,7 @@ impl Update for Block {
                     store::statics::Angle::Left => center = 1,
                 }
             }
-            4 => {
+            store::statics::BlockName::T_mino => {
                 fix_position = 0;
 
                 match self.angle {
@@ -135,7 +143,7 @@ impl Update for Block {
                     store::statics::Angle::Left => center = 1,
                 }
             }
-            5 => {
+            store::statics::BlockName::S_mino => {
                 fix_position = 0;
 
                 match self.angle {
@@ -153,7 +161,7 @@ impl Update for Block {
                     }
                 }
             }
-            6 => {
+            store::statics::BlockName::Z_mino => {
                 center = 2;
                 fix_position = 0;
 
@@ -169,7 +177,6 @@ impl Update for Block {
                     _ => (),
                 }
             }
-            _ => (),
         }
 
         // for queue rendering option
@@ -183,9 +190,9 @@ impl Update for Block {
         for (i, v) in self.positions.iter().enumerate() {
             let num = func::translate_number_to_rect(*v, self.positions[center as usize]);
             let rect = func::rotate_matrix(num);
-            let update = func::translate_rect_to_num(rect);
-            let sum = update + self.positions[center as usize] + fix_position;
-            rotate_blocks[i as usize] = sum;
+            let translated_num = func::translate_rect_to_num(rect);
+            let fixed_num = translated_num + self.positions[center as usize] + fix_position;
+            rotate_blocks[i as usize] = fixed_num;
         }
         rotate_blocks.sort();
 

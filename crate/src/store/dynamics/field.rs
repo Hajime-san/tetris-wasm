@@ -15,6 +15,7 @@ impl Default for Field {
     }
 }
 
+#[allow(unused_assignments)]
 fn default_field_value() -> Vec<i32> {
     let mut f = Vec::with_capacity(FIELD_LENGTH as usize);
     f = vec![store::statics::Number::EMPTY; FIELD_LENGTH as usize];

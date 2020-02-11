@@ -44,16 +44,16 @@ pub struct Prop {
 
 pub type BlockPosition = [i32; 4];
 
-// #[derive(Debug)]
-// pub enum BlockName {
-//     O_mino = 0,
-//     I_mino = 1,
-//     J_mino = 2,
-//     L_mino = 3,
-//     T_mino = 4,
-//     S_mino = 5,
-//     Z_mino = 6,
-// }
+#[derive(Debug, Clone, Copy)]
+pub enum BlockName {
+    O_mino = 0,
+    I_mino = 1,
+    J_mino = 2,
+    L_mino = 3,
+    T_mino = 4,
+    S_mino = 5,
+    Z_mino = 6,
+}
 
 pub const BLOCKS: [Prop; 7] = [
     Prop {

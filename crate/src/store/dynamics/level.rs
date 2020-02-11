@@ -1,6 +1,6 @@
 use math::round;
 
-use crate::store;
+//use crate::store;
 
 #[derive(Debug)]
 pub struct Level {
@@ -101,31 +101,31 @@ impl Get for Level {
     }
 }
 
-#[cfg(test)]
-mod tests {
+// #[cfg(test)]
+// mod tests {
 
-    use super::store;
+//     use super::store;
 
-    use super::Level;
+//     use super::Level;
 
-    use super::Update;
+//     use super::Update;
 
-    use super::Get;
+//     use super::Get;
 
-    #[test]
-    fn some_test() {
-        let mut options: Level = Default::default();
+//     #[test]
+//     fn some_test() {
+//         let mut options: Level = Default::default();
 
-        let v = vec![0; 1];
+//         let v = vec![0; 1];
 
-        options.update_completed_row(&v);
+//         options.update_completed_row(&v);
 
-        options.update_score(&v);
+//         options.update_score(&v);
 
-        let aa = options.get_value().speed;
+//         let aa = options.get_value().speed;
 
-        println!("{:?}", aa);
+//         println!("{:?}", aa);
 
-        println!("{:?}", options.get_value().score);
-    }
-}
+//         println!("{:?}", options.get_value().score);
+//     }
+// }

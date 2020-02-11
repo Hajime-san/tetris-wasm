@@ -48,6 +48,7 @@ impl Update for QueueField {
     }
 }
 
+#[allow(unused_assignments)]
 fn default_queue_field_value() -> Vec<i32> {
     let mut q = Vec::with_capacity(
         (store::statics::Number::QUEUE_ROW * store::statics::Number::QUEUE_ROW) as usize,

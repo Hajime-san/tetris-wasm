@@ -96,18 +96,18 @@ pub fn translate_rect_to_num(mat2: [i32; 2]) -> i32 {
     point
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
 
-    #[test]
-    fn test() {
-        let num = translate_number_to_rect(5, 15);
-        let rect = rotate_matrix(num);
-        let update = translate_rect_to_num(rect);
+//     #[test]
+//     fn test() {
+//         let num = translate_number_to_rect(5, 15);
+//         let rect = rotate_matrix(num);
+//         let update = translate_rect_to_num(rect);
 
-        println!("{:?} is num", num);
-        println!("{:?} is rect", rect);
-        println!("{} is rotated position", update);
-    }
-}
+//         println!("{:?} is num", num);
+//         println!("{:?} is rect", rect);
+//         println!("{} is rotated position", update);
+//     }
+// }
