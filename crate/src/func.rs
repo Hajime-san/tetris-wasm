@@ -1,7 +1,7 @@
+use crate::store;
 use math::round;
 use std::f64::consts::PI;
-
-use crate::store;
+use store::dynamics::render::element::Canvas;
 
 // for compare the first digit between field and a block
 pub fn fix_digit(num: i32) -> i32 {
@@ -100,6 +100,9 @@ pub fn translate_rect_to_num(mat2: [i32; 2]) -> i32 {
 // mod tests {
 //     use super::*;
 
+//     use crate::store::dynamics::render::element::Get;
+//     use crate::store::dynamics::render::element::Update;
+
 //     #[test]
 //     fn test() {
 //         let num = translate_number_to_rect(5, 15);
@@ -109,5 +112,11 @@ pub fn translate_rect_to_num(mat2: [i32; 2]) -> i32 {
 //         println!("{:?} is num", num);
 //         println!("{:?} is rect", rect);
 //         println!("{} is rotated position", update);
+
+//         let mut canvas: Canvas = Default::default();
+//         canvas.set_width(400);
+//         canvas.set_height(600);
+
+//         println!("{:?}", canvas.get_width());
 //     }
 // }
