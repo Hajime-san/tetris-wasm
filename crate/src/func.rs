@@ -5,33 +5,16 @@ use store::dynamics::render::element::Canvas;
 
 // for compare the first digit between field and a block
 pub fn fix_digit(num: i32) -> i32 {
-    if num < 0 {
-        panic!("parameter {} is not a natural number", num);
+    let mut digits = Vec::new();
+    let mut num = num;
+    while num > 9 {
+        digits.push(num % 10);
+        num = num / 10;
     }
+    digits.push(num);
+    digits.reverse();
 
-    if num < store::statics::Number::ROW {
-        return num;
-    }
-
-    let mut m_num: f64 = num as f64;
-
-    let limited_digit: f64;
-
-    loop {
-        m_num = m_num / 10.0;
-
-        if m_num >= 1.0 {
-            limited_digit = m_num;
-            break;
-        }
-    }
-
-    // cut fisrt digit
-    let fixed_num: f64 = round::floor(limited_digit, 0) * 10.0;
-
-    let result: i32 = num % fixed_num as i32;
-
-    result
+    digits[digits.len() - 1]
 }
 
 pub fn translate_number_to_rect(num: i32, center: i32) -> [i32; 2] {

@@ -1,8 +1,10 @@
+use math::round;
 use std::f64;
 use std::iter::Iterator;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
+use crate::func;
 use crate::store;
 use store::dynamics::render::element::*;
 use store::dynamics::render::field as Field;
@@ -85,4 +87,26 @@ pub fn start() {
         h_i += field.step;
     }
     context.stroke_with_path(&grid);
+
+    let mut field_array: store::dynamics::field::Field = Default::default();
+
+    field_array.numbers[4] = 99;
+    field_array.numbers[5] = 99;
+    field_array.numbers[13] = 99;
+    field_array.numbers[14] = 99;
+
+    for (i, v) in field_array.numbers.iter().enumerate() {
+        if v == &store::statics::Number::CURRENT {
+            context.set_fill_style(&JsValue::from("rgba(255,0,255,1)"));
+            context.fill_rect(
+                (((func::fix_digit(i as i32) * field.step as i32) as f64) + (field.standard + 1.0)),
+                (round::floor((i as i32 / store::statics::Number::ROW).into(), 0) as f64)
+                    * field.step
+                    + (field.standard + 1.0),
+                field.step - 2.0,
+                field.step - 2.0,
+            );
+            context.fill();
+        }
+    }
 }
