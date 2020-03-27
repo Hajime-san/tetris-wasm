@@ -1,7 +1,6 @@
 use crate::store;
 use math::round;
 use std::f64::consts::PI;
-use store::dynamics::render::element::Canvas;
 
 // for compare the first digit between field and a block
 pub fn fix_digit(num: i32) -> i32 {

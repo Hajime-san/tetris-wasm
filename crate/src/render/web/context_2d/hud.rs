@@ -1,13 +1,14 @@
 use math::round;
-use std::f64;
 use std::iter::Iterator;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
 use crate::func;
 use crate::store;
-use store::dynamics::render::element::*;
-use store::dynamics::render::field as Field;
+
+use store::dynamics::render::field::Field as GameField;
+use store::dynamics::render::field::Get as GetGameFieldData;
+use store::dynamics::render::field::Update as UpdateGameFieldData;
 
 #[wasm_bindgen]
 extern "C" {
@@ -21,9 +22,12 @@ macro_rules! console_log {
 
 #[wasm_bindgen(start)]
 pub fn start() {
-    let mut canvas_size: Canvas = Default::default();
-    canvas_size.set_width(400);
-    canvas_size.set_height(600);
+    // initialize Game field area size
+    let mut field: GameField = Default::default();
+    field.set_width(400);
+    field.set_height(600);
+
+    // get CanvasElement and initialize
 
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("canvas").unwrap();
@@ -32,8 +36,8 @@ pub fn start() {
         .map_err(|_| ())
         .unwrap();
 
-    canvas.set_width(canvas_size.get_width());
-    canvas.set_height(canvas_size.get_height());
+    canvas.set_width(field.get_width());
+    canvas.set_height(field.get_height());
 
     let context = canvas
         .get_context("2d")
@@ -46,18 +50,16 @@ pub fn start() {
     context.set_stroke_style(&JsValue::from("rgba(255,255,255,0.6)"));
     context.set_fill_style(&JsValue::from("rgba(255,255,255,0.7)"));
 
-    let field: Field::Field = Default::default();
-
     // outline
 
     let outline = web_sys::Path2d::new().unwrap();
 
     context.begin_path();
     outline.rect(
-        field.standard,
-        field.standard,
-        field.horizon,
-        field.vertical,
+        field.get_render_boundary(),
+        field.get_render_boundary(),
+        field.get_horizon_boundary(),
+        field.get_vertical_boundary(),
     );
     context.stroke_with_path(&outline);
 
@@ -65,26 +67,32 @@ pub fn start() {
 
     let grid = web_sys::Path2d::new().unwrap();
 
-    let start = (field.step + field.standard) as usize;
+    let start = (field.get_step() + field.get_render_boundary()) as usize;
 
     // horizon line
-    let v_end = field.vertical as usize;
+    let v_end = field.get_vertical_boundary() as usize;
     let mut v_i = start as f64;
-    for _ in (start..v_end).step_by(field.step as usize) {
+    for _ in (start..v_end).step_by(field.get_step() as usize) {
         context.begin_path();
-        grid.move_to(field.standard, v_i);
-        grid.line_to(field.horizon + field.standard, v_i);
-        v_i += field.step;
+        grid.move_to(field.get_render_boundary(), v_i);
+        grid.line_to(
+            field.get_horizon_boundary() + field.get_render_boundary(),
+            v_i,
+        );
+        v_i += field.get_step();
     }
 
     // vertical line
-    let h_end = field.horizon as usize;
+    let h_end = field.get_horizon_boundary() as usize;
     let mut h_i = start as f64;
-    for _ in (start..h_end).step_by(field.step as usize) {
+    for _ in (start..h_end).step_by(field.get_step() as usize) {
         context.begin_path();
-        grid.move_to(h_i, field.standard);
-        grid.line_to(h_i, field.vertical + field.standard);
-        h_i += field.step;
+        grid.move_to(h_i, field.get_render_boundary());
+        grid.line_to(
+            h_i,
+            field.get_vertical_boundary() + field.get_render_boundary(),
+        );
+        h_i += field.get_step();
     }
     context.stroke_with_path(&grid);
 
@@ -97,14 +105,15 @@ pub fn start() {
 
     for (i, v) in field_array.numbers.iter().enumerate() {
         if v == &store::statics::Number::CURRENT {
-            context.set_fill_style(&JsValue::from("rgba(255,0,255,1)"));
+            context.set_fill_style(&JsValue::from("rgba(255,0,255,0.6)"));
             context.fill_rect(
-                (((func::fix_digit(i as i32) * field.step as i32) as f64) + (field.standard + 1.0)),
-                (round::floor((i as i32 / store::statics::Number::ROW).into(), 0) as f64)
-                    * field.step
-                    + (field.standard + 1.0),
-                field.step - 2.0,
-                field.step - 2.0,
+                (((func::fix_digit(i as i32) * field.get_step() as i32) as f64)
+                    + (field.get_render_boundary() + 1.0)),
+                (round::floor((i as i32 / store::statics::Number::ROW) as f64, 0) as f64)
+                    * field.get_step()
+                    + (field.get_render_boundary() + 1.0),
+                field.get_step() - 2.0,
+                field.get_step() - 2.0,
             );
             context.fill();
         }
