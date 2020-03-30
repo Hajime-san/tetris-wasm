@@ -106,15 +106,8 @@ pub fn start() {
     for (i, v) in field_array.numbers.iter().enumerate() {
         if v == &store::statics::Number::CURRENT {
             context.set_fill_style(&JsValue::from("rgba(255,0,255,0.6)"));
-            context.fill_rect(
-                (((func::fix_digit(i as i32) * field.get_step() as i32) as f64)
-                    + (field.get_render_boundary() + 1.0)),
-                (round::floor((i as i32 / store::statics::Number::ROW) as f64, 0) as f64)
-                    * field.get_step()
-                    + (field.get_render_boundary() + 1.0),
-                field.get_step() - 2.0,
-                field.get_step() - 2.0,
-            );
+            let rect = field.set_fill_rect(&i);
+            context.fill_rect(rect.x, rect.y, rect.w, rect.h);
             context.fill();
         }
     }

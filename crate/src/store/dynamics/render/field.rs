@@ -1,3 +1,6 @@
+use math::round;
+
+use crate::func;
 use crate::store;
 
 #[derive(Debug)]
@@ -8,7 +11,14 @@ pub struct Field {
     vertical: f64,
     render_boundary: f64,
     step: f64,
-    pub queue_step: f64,
+    queue_step: f64,
+}
+
+pub struct Rect {
+    pub x: f64,
+    pub y: f64,
+    pub w: f64,
+    pub h: f64,
 }
 
 pub struct Text {
@@ -57,6 +67,7 @@ pub trait Update {
     fn set_width(&mut self, width: u32);
     fn set_height(&mut self, height: u32);
     fn set_boundary(&self, step_time: &i32) -> f64;
+    fn set_fill_rect(&self, position: &usize) -> Rect;
 }
 pub trait Get {
     fn get_width(&self) -> u32;
@@ -76,6 +87,17 @@ impl Update for Field {
     }
     fn set_boundary(&self, step_time: &i32) -> f64 {
         self.step * (*step_time as f64)
+    }
+    fn set_fill_rect(&self, position: &usize) -> Rect {
+        Rect {
+            x: (((func::fix_digit(*position as i32) * self.step as i32) as f64)
+                + (self.render_boundary + 1.0)),
+            y: (round::floor((*position as i32 / store::statics::Number::ROW) as f64, 0) as f64)
+                * self.step
+                + (self.render_boundary + 1.0),
+            w: self.step - 2.0,
+            h: self.step - 2.0,
+        }
     }
 }
 
