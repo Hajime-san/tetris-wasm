@@ -1,10 +1,7 @@
-use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
-
 use crate::store::dynamics::render::field::Field;
 use crate::store::dynamics::render::field::Get;
 
-fn clear_all(field: Field, context: web_sys::CanvasRenderingContext2d) {
+pub fn clear_canvas_field(field: &Field, context: &web_sys::CanvasRenderingContext2d) {
     context.clear_rect(
         0.0,
         0.0,

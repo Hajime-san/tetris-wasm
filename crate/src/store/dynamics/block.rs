@@ -23,12 +23,36 @@ pub trait Update {
     fn crate_rotate_block(&mut self, fix: bool) -> store::statics::BlockPosition;
 }
 
+pub trait Get {
+    fn get_current_block_type(&self) -> &store::statics::BlockName;
+    fn get_current_block_number(&self) -> i32;
+}
+
 impl Default for Block {
     fn default() -> Self {
         Self {
             positions: [5, 6, 14, 15],
             angle: store::statics::Angle::Right,
-            block_type: store::statics::BlockName::O_mino,
+            block_type: store::statics::BlockName::I_mino,
+        }
+    }
+}
+
+impl Get for Block {
+    fn get_current_block_type(&self) -> &store::statics::BlockName {
+        &self.block_type
+    }
+
+    fn get_current_block_number(&self) -> i32 {
+
+        match &self.block_type {
+            &store::statics::BlockName::O_mino => store::statics::BlockName::O_mino.unwrap_invalid(),
+            &store::statics::BlockName::I_mino => store::statics::BlockName::I_mino.unwrap_invalid(),
+            &store::statics::BlockName::J_mino => store::statics::BlockName::J_mino.unwrap_invalid(),
+            &store::statics::BlockName::L_mino => store::statics::BlockName::L_mino.unwrap_invalid(),
+            &store::statics::BlockName::T_mino => store::statics::BlockName::T_mino.unwrap_invalid(),
+            &store::statics::BlockName::S_mino => store::statics::BlockName::S_mino.unwrap_invalid(),
+            &store::statics::BlockName::Z_mino => store::statics::BlockName::Z_mino.unwrap_invalid()
         }
     }
 }
@@ -97,7 +121,7 @@ impl Update for Block {
         // fix position after rotated
         let mut fix_position = 0;
 
-        match self.block_type {
+        match &self.block_type {
             store::statics::BlockName::O_mino => {
                 if fix {
                     self.positions
@@ -204,12 +228,13 @@ impl Update for Block {
 // mod tests {
 //     use super::Block;
 //     use super::Update;
+//     use super::Get;
 
 //     #[test]
 //     fn some_test() {
 //         let def: Block = Default::default();
 
-//         let rotate = def.crate_rotate_block(true);
+//         let rotate = def.get_current_block_number();
 
 //         println!("{:?}", rotate);
 //     }

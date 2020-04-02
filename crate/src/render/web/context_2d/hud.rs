@@ -5,10 +5,17 @@ use wasm_bindgen::JsCast;
 
 use crate::func;
 use crate::store;
+use crate::render;
 
 use store::dynamics::render::field::Field as GameField;
 use store::dynamics::render::field::Get as GetGameFieldData;
 use store::dynamics::render::field::Update as UpdateGameFieldData;
+
+use store::dynamics::block::Block as Block;
+use store::dynamics::block::Get as GetBlockContext;
+
+use render::web::context_2d::util::*;
+use render::web::context_2d::block::*;
 
 #[wasm_bindgen]
 extern "C" {
@@ -96,19 +103,16 @@ pub fn start() {
     }
     context.stroke_with_path(&grid);
 
-    let mut field_array: store::dynamics::field::Field = Default::default();
+    let mut field_collection: store::dynamics::field::Field = Default::default();
 
-    field_array.numbers[4] = 99;
-    field_array.numbers[5] = 99;
-    field_array.numbers[13] = 99;
-    field_array.numbers[14] = 99;
+    field_collection.numbers[4] = 99;
+    field_collection.numbers[5] = 99;
+    field_collection.numbers[13] = 99;
+    field_collection.numbers[14] = 99;
 
-    for (i, v) in field_array.numbers.iter().enumerate() {
-        if v == &store::statics::Number::CURRENT {
-            context.set_fill_style(&JsValue::from("rgba(255,0,255,0.6)"));
-            let rect = field.set_fill_rect(&i);
-            context.fill_rect(rect.x, rect.y, rect.w, rect.h);
-            context.fill();
-        }
-    }
+    let block: Block = Default::default();
+
+    let current = block.get_current_block_type();
+
+    render_block(&field, &field_collection, &current, &context);
 }
