@@ -1,7 +1,5 @@
 use math::round;
 
-//use crate::store;
-
 #[derive(Debug)]
 pub struct Level {
     count: i32,
@@ -104,13 +102,7 @@ impl Get for Level {
 // #[cfg(test)]
 // mod tests {
 
-//     use super::store;
-
-//     use super::Level;
-
-//     use super::Update;
-
-//     use super::Get;
+//     use super::*;
 
 //     #[test]
 //     fn some_test() {

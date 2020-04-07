@@ -110,6 +110,11 @@ pub fn start() {
     field_collection.numbers[13] = 99;
     field_collection.numbers[14] = 99;
 
+    field_collection.numbers[54] = 3;
+    field_collection.numbers[64] = 3;
+    field_collection.numbers[74] = 3;
+    field_collection.numbers[84] = 3;
+
     let block: Block = Default::default();
 
     let current = block.get_current_block_type();

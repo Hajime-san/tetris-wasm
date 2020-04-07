@@ -4,11 +4,13 @@ use std::iter::Iterator;
 
 use crate::store;
 
-use store::dynamics::render::field::Field as GameField;
-use store::dynamics::render::field::Update as UpdateGameFieldData;
-use store::dynamics::field::Field as FieldCollection;
+use store::dynamics::render::field::Field as RenderField;
+use store::dynamics::render::field::Update as UpdateRenderField;
+use store::dynamics::field::Field as GameField;
 
-pub fn render_block(field: &GameField, field_collection: &FieldCollection, block_type: &store::statics::BlockName, context: &web_sys::CanvasRenderingContext2d) {
+use store::dynamics::delete::Delete as DeleteField;
+
+pub fn render_block(field: &RenderField, field_collection: &GameField, block_type: &store::statics::BlockName, context: &web_sys::CanvasRenderingContext2d) {
     for (i, v) in field_collection.numbers.iter().enumerate() {
 
         // draw controllable block
@@ -26,5 +28,18 @@ pub fn render_block(field: &GameField, field_collection: &FieldCollection, block
             context.fill_rect(rect.x, rect.y, rect.w, rect.h);
             context.fill();
         }
+    }
+}
+
+pub fn delete_block(field: &RenderField, rows: &DeleteField, context: &web_sys::CanvasRenderingContext2d) {
+    for v in rows.complete_row_numbers.iter() {
+
+        for iter in 0..store::statics::Number::ROW {
+            let i = (v * store::statics::Number::ROW + iter) as usize;
+
+            let rect = field.set_fill_rect(&i);
+            context.clear_rect(rect.x, rect.y, rect.w, rect.h);
+        }
+
     }
 }
