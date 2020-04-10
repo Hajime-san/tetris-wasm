@@ -1,9 +1,6 @@
 use crate::func;
 use crate::store;
 
-// use crate::store::dynamics::block::Block;
-use crate::store::dynamics::block::Update;
-
 pub fn movable_left(field: &Vec<i32>, current_block: &store::statics::BlockPosition) -> bool {
     let mut flag = false;
 

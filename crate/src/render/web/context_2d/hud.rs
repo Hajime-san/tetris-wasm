@@ -1,5 +1,3 @@
-use math::round;
-use std::iter::Iterator;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 

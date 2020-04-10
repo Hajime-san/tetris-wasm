@@ -1,5 +1,3 @@
-use arraytools::ArrayTools;
-
 use crate::store;
 
 pub const FIELD_LENGTH: i32 = store::statics::Number::ROW * store::statics::Number::COLUMN;
