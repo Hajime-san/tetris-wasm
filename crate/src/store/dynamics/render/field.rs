@@ -66,16 +66,16 @@ impl Default for Text {
 pub trait Update {
     fn set_width(&mut self, width: u32);
     fn set_height(&mut self, height: u32);
-    fn set_boundary(&self, step_time: &i32) -> f64;
-    fn set_fill_rect(&self, position: &usize) -> Rect;
 }
 pub trait Get {
     fn get_width(&self) -> u32;
     fn get_height(&self) -> u32;
     fn get_step(&self) -> f64;
+    fn get_boundary(&self, step_time: &i32) -> f64;
     fn get_render_boundary(&self) -> f64;
     fn get_horizon_boundary(&self) -> f64;
     fn get_vertical_boundary(&self) -> f64;
+    fn get_fill_rect(&self, position: &usize) -> Rect;
 }
 
 impl Update for Field {
@@ -84,20 +84,6 @@ impl Update for Field {
     }
     fn set_height(&mut self, height: u32) {
         self.height = height
-    }
-    fn set_boundary(&self, step_time: &i32) -> f64 {
-        self.step * (*step_time as f64)
-    }
-    fn set_fill_rect(&self, position: &usize) -> Rect {
-        Rect {
-            x: (((func::fix_digit(*position as i32) * self.step as i32) as f64)
-                + (self.render_boundary + 1.0)),
-            y: (round::floor((*position as i32 / store::statics::Number::ROW) as f64, 0) as f64)
-                * self.step
-                + (self.render_boundary + 1.0),
-            w: self.step - 2.0,
-            h: self.step - 2.0,
-        }
     }
 }
 
@@ -111,6 +97,9 @@ impl Get for Field {
     fn get_step(&self) -> f64 {
         self.step
     }
+    fn get_boundary(&self, step_time: &i32) -> f64 {
+        self.step * (*step_time as f64)
+    }
     fn get_render_boundary(&self) -> f64 {
         self.render_boundary
     }
@@ -119,5 +108,16 @@ impl Get for Field {
     }
     fn get_vertical_boundary(&self) -> f64 {
         self.step * (*&store::statics::Number::COLUMN as f64)
+    }
+    fn get_fill_rect(&self, position: &usize) -> Rect {
+        Rect {
+            x: (((func::fix_digit(*position as i32) * self.step as i32) as f64)
+                + (self.render_boundary + 1.0)),
+            y: (round::floor((*position as i32 / store::statics::Number::ROW) as f64, 0) as f64)
+                * self.step
+                + (self.render_boundary + 1.0),
+            w: self.step - 2.0,
+            h: self.step - 2.0,
+        }
     }
 }
