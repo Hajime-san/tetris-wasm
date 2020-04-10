@@ -7,12 +7,11 @@ use crate::func;
 use crate::store;
 use crate::render;
 
-use store::dynamics::render::field::Field as GameField;
-use store::dynamics::render::field::Get as GetGameFieldData;
-use store::dynamics::render::field::Update as UpdateGameFieldData;
+use store::dynamics::render::field::{ Field as RenderField, Get as _, Update as _, };
 
-use store::dynamics::block::Block as Block;
-use store::dynamics::block::Get as GetBlockContext;
+use store::dynamics::field::{ Field as GameFieldContext, Get as _, Update as _, };
+
+use store::dynamics::block::{ Block as BlockContext, Get as _, Update as _, };
 
 use render::web::context_2d::util::*;
 use render::web::context_2d::block::*;
@@ -30,7 +29,7 @@ macro_rules! console_log {
 #[wasm_bindgen(start)]
 pub fn start() {
     // initialize Game field area size
-    let mut field: GameField = Default::default();
+    let mut field: RenderField = Default::default();
     field.set_width(400);
     field.set_height(600);
 
@@ -103,21 +102,25 @@ pub fn start() {
     }
     context.stroke_with_path(&grid);
 
-    let mut field_collection: store::dynamics::field::Field = Default::default();
+    let mut field_collection: GameFieldContext = Default::default();
 
-    field_collection.numbers[4] = 99;
-    field_collection.numbers[5] = 99;
-    field_collection.numbers[13] = 99;
-    field_collection.numbers[14] = 99;
+    // field_collection.numbers[4] = 99;
+    // field_collection.numbers[5] = 99;
+    // field_collection.numbers[13] = 99;
+    // field_collection.numbers[14] = 99;
 
-    field_collection.numbers[54] = 3;
-    field_collection.numbers[64] = 3;
-    field_collection.numbers[74] = 3;
-    field_collection.numbers[84] = 3;
+    // field_collection.numbers[54] = 3;
+    // field_collection.numbers[64] = 3;
+    // field_collection.numbers[74] = 3;
+    // field_collection.numbers[84] = 3;
 
-    let block: Block = Default::default();
+    let block: BlockContext = Default::default();
 
-    let current = block.get_current_block_type();
+    let current_block_type = block.get_current_block_type();
 
-    render_block(&field, &field_collection, &current, &context);
+    let current_block_positions = block.get_current_block_positions();
+
+    field_collection.transfer_current(&current_block_positions);
+
+    render_block(&field, &field_collection, &current_block_type, &context);
 }

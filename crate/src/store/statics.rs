@@ -117,7 +117,7 @@ pub const I_NUMBER: BlockPosition = [
     Number::A + (Number::ROW * 2),
     Number::A + (Number::ROW * 3),
 ];
-pub const I_COLOR: &'static str = "rgba(240, 241, 77, 1)";
+pub const I_COLOR: &'static str = "rgba(105, 241, 240, 1)";
 
 // J-block
 pub const J_NUMBER: BlockPosition = [

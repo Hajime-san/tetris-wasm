@@ -11,21 +11,15 @@ pub struct Block {
 }
 
 pub trait Update {
-    fn transfer_to_fix(&self, mut field: Vec<i32>);
-    fn clear_current(&mut self, mut field: Vec<i32>);
-    fn move_current(&mut self, dir: &str) -> Result<store::statics::BlockPosition, ()>;
-    fn transfer_current(
-        &mut self,
-        current_block: store::statics::BlockPosition,
-        mut field: Vec<i32>,
-    );
     fn reverse_angle(&mut self);
-    fn crate_rotate_block(&mut self, fix: bool) -> store::statics::BlockPosition;
 }
 
 pub trait Get {
-    fn get_current_block_type(&self) -> &store::statics::BlockName;
+    fn get_current_block_positions(&self) -> store::statics::BlockPosition;
+    fn get_current_block_type(&self) -> store::statics::BlockName;
     fn get_current_block_number(&self) -> i32;
+    fn get_moved_current_block_positions(&mut self, dir: &str) -> Result<store::statics::BlockPosition, ()>;
+    fn crate_rotate_block(&mut self, fix: bool) -> store::statics::BlockPosition;
 }
 
 impl Default for Block {
@@ -33,14 +27,19 @@ impl Default for Block {
         Self {
             positions: [5, 6, 14, 15],
             angle: store::statics::Angle::Right,
-            block_type: store::statics::BlockName::I_mino,
+            block_type: store::statics::BlockName::S_mino,
         }
     }
 }
 
 impl Get for Block {
-    fn get_current_block_type(&self) -> &store::statics::BlockName {
-        &self.block_type
+
+    fn get_current_block_positions(&self) -> store::statics::BlockPosition {
+        self.positions
+    }
+
+    fn get_current_block_type(&self) -> store::statics::BlockName {
+        self.block_type
     }
 
     fn get_current_block_number(&self) -> i32 {
@@ -55,16 +54,8 @@ impl Get for Block {
             &store::statics::BlockName::Z_mino => store::statics::BlockName::Z_mino.unwrap_invalid()
         }
     }
-}
 
-impl Update for Block {
-    fn clear_current(&mut self, mut field: Vec<i32>) {
-        for v in &self.positions {
-            field[*v as usize] = store::statics::Number::EMPTY;
-        }
-    }
-
-    fn move_current(&mut self, dir: &str) -> Result<store::statics::BlockPosition, ()> {
+    fn get_moved_current_block_positions(&mut self, dir: &str) -> Result<store::statics::BlockPosition, ()> {
         match dir {
             "left" => Ok(self
                 .positions
@@ -74,36 +65,6 @@ impl Update for Block {
                 .map(|x| x + store::statics::Number::RIGHT_MOVE)),
             "down" => Ok(self.positions.map(|x| x + store::statics::Number::ROW)),
             dir => Err(eprint!("wrong parameter '{}' is assinged!! ", dir)),
-        }
-    }
-
-    fn transfer_current(
-        &mut self,
-        current_block: store::statics::BlockPosition,
-        mut field: Vec<i32>,
-    ) {
-        self.positions = current_block;
-        for v in &current_block {
-            field[*v as usize] = store::statics::Number::CURRENT;
-        }
-    }
-
-    fn transfer_to_fix(&self, mut field: Vec<i32>) {
-        let iter_field = field.clone();
-        for (i, v) in iter_field.iter().enumerate() {
-            if *v == store::statics::Number::CURRENT {
-                field[i as usize] = self.block_type as i32;
-            }
-        }
-    }
-
-    // when failure to rotate
-    fn reverse_angle(&mut self) {
-        match self.angle {
-            store::statics::Angle::Initial => self.angle = store::statics::Angle::Left,
-            store::statics::Angle::Right => self.angle = store::statics::Angle::Initial,
-            store::statics::Angle::Down => self.angle = store::statics::Angle::Right,
-            store::statics::Angle::Left => self.angle = store::statics::Angle::Down,
         }
     }
 
@@ -198,6 +159,8 @@ impl Update for Block {
                         fix_position =
                             store::statics::Number::ROW + store::statics::Number::LEFT_MOVE
                     }
+
+                    // return fix_position = 0, that declared upper scope
                     _ => (),
                 }
             }
@@ -221,6 +184,19 @@ impl Update for Block {
         rotate_blocks.sort();
 
         rotate_blocks
+    }
+}
+
+impl Update for Block {
+
+    // when failure to rotate
+    fn reverse_angle(&mut self) {
+        match self.angle {
+            store::statics::Angle::Initial => self.angle = store::statics::Angle::Left,
+            store::statics::Angle::Right => self.angle = store::statics::Angle::Initial,
+            store::statics::Angle::Down => self.angle = store::statics::Angle::Right,
+            store::statics::Angle::Left => self.angle = store::statics::Angle::Down,
+        }
     }
 }
 

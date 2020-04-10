@@ -7,11 +7,12 @@ use crate::store;
 use store::dynamics::render::field::Field as RenderField;
 use store::dynamics::render::field::Update as UpdateRenderField;
 use store::dynamics::field::Field as GameField;
+use store::dynamics::field::Get as GetGameField;
 
 use store::dynamics::delete::Delete as DeleteField;
 
 pub fn render_block(field: &RenderField, field_collection: &GameField, block_type: &store::statics::BlockName, context: &web_sys::CanvasRenderingContext2d) {
-    for (i, v) in field_collection.numbers.iter().enumerate() {
+    for (i, v) in field_collection.get_numbers().iter().enumerate() {
 
         // draw controllable block
         if v == &store::statics::Number::CURRENT {
@@ -31,7 +32,19 @@ pub fn render_block(field: &RenderField, field_collection: &GameField, block_typ
     }
 }
 
-pub fn delete_block(field: &RenderField, rows: &DeleteField, context: &web_sys::CanvasRenderingContext2d) {
+pub fn clear_playing_block(field: &RenderField, field_collection: &GameField, context: &web_sys::CanvasRenderingContext2d) {
+
+    for (i, v) in field_collection.get_numbers().iter().enumerate() {
+
+        // draw controllable block
+        if v == &store::statics::Number::CURRENT {
+            let rect = field.set_fill_rect(&i);
+            context.clear_rect(rect.x, rect.y, rect.w, rect.h);
+        }
+    }
+}
+
+pub fn delete_completed_block(field: &RenderField, rows: &DeleteField, context: &web_sys::CanvasRenderingContext2d) {
     for v in rows.complete_row_numbers.iter() {
 
         for iter in 0..store::statics::Number::ROW {

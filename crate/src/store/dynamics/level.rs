@@ -10,15 +10,20 @@ pub struct Level {
     multiple_number: i32,
 }
 
-trait Update {
+pub trait Update {
     fn update_count(&mut self);
     fn update_completed_row(&mut self, length: &Vec<i32>);
     fn update_level_and_speed(&mut self);
     fn update_score(&mut self, length: &Vec<i32>);
 }
 
-trait Get {
-    fn get_value(&self) -> Self;
+pub trait Get {
+    fn get_count(&self) -> &i32;
+    fn get_completed_row(&self) -> &i32;
+    fn get_speed(&self) -> &i32;
+    fn get_difficulty(&self) -> &i32;
+    fn get_score(&self) -> &i32;
+    fn get_multiple_number(&self) -> &i32;
 }
 
 impl Default for Level {
@@ -87,37 +92,22 @@ impl Update for Level {
 }
 
 impl Get for Level {
-    fn get_value(&self) -> Self {
-        Self {
-            count: self.count,
-            completed_row: self.completed_row,
-            speed: self.speed,
-            difficulty: self.difficulty,
-            score: self.score,
-            multiple_number: self.multiple_number,
-        }
+    fn get_count(&self) -> &i32 {
+        &self.count
+    }
+    fn get_completed_row(&self) -> &i32 {
+        &self.completed_row
+    }
+    fn get_speed(&self) -> &i32 {
+        &self.speed
+    }
+    fn get_difficulty(&self) -> &i32 {
+        &self.difficulty
+    }
+    fn get_score(&self) -> &i32 {
+        &self.score
+    }
+    fn get_multiple_number(&self) -> &i32 {
+        &self.multiple_number
     }
 }
-
-// #[cfg(test)]
-// mod tests {
-
-//     use super::*;
-
-//     #[test]
-//     fn some_test() {
-//         let mut options: Level = Default::default();
-
-//         let v = vec![0; 1];
-
-//         options.update_completed_row(&v);
-
-//         options.update_score(&v);
-
-//         let aa = options.get_value().speed;
-
-//         println!("{:?}", aa);
-
-//         println!("{:?}", options.get_value().score);
-//     }
-// }
