@@ -118,7 +118,7 @@ pub fn start() {
 
     let current_block_positions = block.get_current_block_positions();
 
-    field_collection.transfer_current(&current_block_positions);
+    field_collection.transfer_current_block(&current_block_positions);
 
     render_block(&field, &field_collection, &current_block_type, &context);
 }
