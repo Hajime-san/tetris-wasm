@@ -5,8 +5,8 @@ use crate::store;
 
 #[derive(Debug)]
 pub struct QueueField {
-    pub numbers: Vec<i32>,
-    pub line: Vec<i32>,
+    list: Vec<i32>,
+    line: Vec<i32>,
 }
 
 trait Update {
@@ -16,7 +16,7 @@ trait Update {
 impl Default for QueueField {
     fn default() -> Self {
         Self {
-            numbers: default_queue_field_value(),
+            list: default_queue_field_value(),
             line: default_queue_value(),
         }
     }

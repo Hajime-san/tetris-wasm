@@ -116,11 +116,3 @@ pub fn movable_rotate(field: &Vec<i32>, tmp_block: &store::statics::BlockPositio
         true
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::store;
-
-    #[test]
-    fn some_test() {}
-}

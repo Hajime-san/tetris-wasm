@@ -55,21 +55,6 @@ pub enum BlockName {
     Z_mino
 }
 
-impl BlockName {
-    pub fn unwrap_invalid(self) -> i32 {
-        use self::BlockName::*;
-        match self {
-            O_mino => 0,
-            I_mino => 1,
-            J_mino => 2,
-            L_mino => 3,
-            T_mino => 4,
-            S_mino => 5,
-            Z_mino => 6,
-        }
-    }
-}
-
 pub const BLOCKS: [Prop; 7] = [
     Prop {
         number: O_NUMBER,

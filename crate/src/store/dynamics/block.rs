@@ -17,7 +17,6 @@ pub trait Update {
 pub trait Get {
     fn get_current_block_positions(&self) -> store::statics::BlockPosition;
     fn get_current_block_type(&self) -> store::statics::BlockName;
-    fn get_current_block_number(&self) -> i32;
     fn get_moved_current_block_positions(&mut self, dir: &str) -> Result<store::statics::BlockPosition, ()>;
     fn crate_rotate_block(&mut self, fix: bool) -> store::statics::BlockPosition;
 }
@@ -40,19 +39,6 @@ impl Get for Block {
 
     fn get_current_block_type(&self) -> store::statics::BlockName {
         self.block_type
-    }
-
-    fn get_current_block_number(&self) -> i32 {
-
-        match &self.block_type {
-            &store::statics::BlockName::O_mino => store::statics::BlockName::O_mino.unwrap_invalid(),
-            &store::statics::BlockName::I_mino => store::statics::BlockName::I_mino.unwrap_invalid(),
-            &store::statics::BlockName::J_mino => store::statics::BlockName::J_mino.unwrap_invalid(),
-            &store::statics::BlockName::L_mino => store::statics::BlockName::L_mino.unwrap_invalid(),
-            &store::statics::BlockName::T_mino => store::statics::BlockName::T_mino.unwrap_invalid(),
-            &store::statics::BlockName::S_mino => store::statics::BlockName::S_mino.unwrap_invalid(),
-            &store::statics::BlockName::Z_mino => store::statics::BlockName::Z_mino.unwrap_invalid()
-        }
     }
 
     fn get_moved_current_block_positions(&mut self, dir: &str) -> Result<store::statics::BlockPosition, ()> {

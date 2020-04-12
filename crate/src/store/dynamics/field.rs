@@ -2,7 +2,7 @@ use crate::store;
 
 pub const FIELD_LENGTH: i32 = store::statics::Number::ROW * store::statics::Number::COLUMN;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Field {
     list: Vec<i32>,
     single_rows: Vec<Vec<i32>>,

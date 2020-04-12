@@ -12,9 +12,11 @@ pub struct Field {
     render_boundary: f64,
     step: f64,
     queue_step: f64,
+    rect: Rect
 }
 
-pub struct Rect {
+#[derive(Debug)]
+struct Rect {
     pub x: f64,
     pub y: f64,
     pub w: f64,
@@ -43,6 +45,12 @@ impl Default for Field {
             render_boundary: 7.0,
             step: 27.0,
             queue_step: 20.0,
+            rect: Rect {
+                x: 0.0,
+                y: 0.0,
+                w: 0.0,
+                h: 0.0
+            }
         }
     }
 }
@@ -75,7 +83,10 @@ pub trait Get {
     fn get_render_boundary(&self) -> f64;
     fn get_horizon_boundary(&self) -> f64;
     fn get_vertical_boundary(&self) -> f64;
-    fn get_fill_rect(&self, position: &usize) -> Rect;
+    fn get_rect_x(&self, position: &usize) -> f64;
+    fn get_rect_y(&self, position: &usize) -> f64;
+    fn get_rect_w(&self) -> f64;
+    fn get_rect_h(&self) -> f64;
 }
 
 impl Update for Field {
@@ -109,15 +120,18 @@ impl Get for Field {
     fn get_vertical_boundary(&self) -> f64 {
         self.step * (*&store::statics::Number::COLUMN as f64)
     }
-    fn get_fill_rect(&self, position: &usize) -> Rect {
-        Rect {
-            x: (((func::fix_digit(*position as i32) * self.step as i32) as f64)
-                + (self.render_boundary + 1.0)),
-            y: (round::floor((*position as i32 / store::statics::Number::ROW) as f64, 0) as f64)
+    fn get_rect_x(&self, position: &usize) -> f64 {
+        (((func::fix_digit(*position as i32) * self.step as i32) as f64) + (self.render_boundary + 1.0))
+    }
+    fn get_rect_y(&self, position: &usize) -> f64 {
+        (round::floor((*position as i32 / store::statics::Number::ROW) as f64, 0) as f64)
                 * self.step
-                + (self.render_boundary + 1.0),
-            w: self.step - 2.0,
-            h: self.step - 2.0,
-        }
+                + (self.render_boundary + 1.0)
+    }
+    fn get_rect_w(&self) -> f64 {
+        self.step - 2.0
+    }
+    fn get_rect_h(&self) -> f64 {
+        self.step - 2.0
     }
 }
