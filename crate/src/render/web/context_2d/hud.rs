@@ -1,3 +1,6 @@
+use std::cell::Cell;
+use std::rc::Rc;
+
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -112,11 +115,30 @@ pub fn start() {
     // field_collection.numbers[74] = 3;
     // field_collection.numbers[84] = 3;
 
-    let block: BlockContext = Default::default();
+    let mut block: BlockContext = Default::default();
 
-    let current_block_positions = block.get_current_block_positions();
+    let mut current_block_positions = block.get_current_block_positions();
 
     field_collection.transfer_current_block(&current_block_positions);
 
     render_block(&field, &field_collection, &block, &context);
+
+    let drawing_ok = Rc::new(Cell::new(false));
+    {
+        let context = context.clone();
+        let drawing_ok = drawing_ok.clone();
+        let closure = Closure::wrap(Box::new(move |event: web_sys::KeyboardEvent| {
+            if event.key_code() == 40 {
+                clear_playing_block(&field, &field_collection, &context);
+                field_collection.clear_current_block(&current_block_positions);
+                current_block_positions = block.get_moved_current_block_positions("down").unwrap();
+                block.update_current_positions(&current_block_positions);
+                field_collection.transfer_current_block(&current_block_positions);
+                render_block(&field, &field_collection, &block, &context);
+                console_log!("console.log from Rust with WebAssembly {:?}", &current_block_positions);
+            }
+        }) as Box<dyn FnMut(_)>);
+        document.add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref());
+        closure.forget();
+    }
 }

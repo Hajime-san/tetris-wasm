@@ -11,6 +11,7 @@ pub struct Block {
 }
 
 pub trait Update {
+    fn update_current_positions(&mut self, moved_current_positions: &store::statics::BlockPosition);
     fn reverse_angle(&mut self);
 }
 
@@ -174,6 +175,10 @@ impl Get for Block {
 }
 
 impl Update for Block {
+
+    fn update_current_positions(&mut self, moved_current_positions: &store::statics::BlockPosition) {
+        self.positions = *moved_current_positions;
+    }
 
     // when failure to rotate
     fn reverse_angle(&mut self) {
