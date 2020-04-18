@@ -71,67 +71,49 @@ impl Default for Text {
     }
 }
 
-pub trait Update {
-    fn set_width(&mut self, width: u32);
-    fn set_height(&mut self, height: u32);
-}
-pub trait Get {
-    fn get_width(&self) -> u32;
-    fn get_height(&self) -> u32;
-    fn get_step(&self) -> f64;
-    fn get_boundary(&self, step_time: &i32) -> f64;
-    fn get_render_boundary(&self) -> f64;
-    fn get_horizon_boundary(&self) -> f64;
-    fn get_vertical_boundary(&self) -> f64;
-    fn get_rect_x(&self, position: &usize) -> f64;
-    fn get_rect_y(&self, position: &usize) -> f64;
-    fn get_rect_w(&self) -> f64;
-    fn get_rect_h(&self) -> f64;
-}
 
-impl Update for Field {
-    fn set_width(&mut self, width: u32) {
-        self.width = width
-    }
-    fn set_height(&mut self, height: u32) {
-        self.height = height
-    }
-}
-
-impl Get for Field {
-    fn get_width(&self) -> u32 {
+impl Field {
+    pub fn get_width(&self) -> u32 {
         self.width
     }
-    fn get_height(&self) -> u32 {
+    pub fn get_height(&self) -> u32 {
         self.height
     }
-    fn get_step(&self) -> f64 {
+    pub fn get_step(&self) -> f64 {
         self.step
     }
-    fn get_boundary(&self, step_time: &i32) -> f64 {
+    pub fn get_boundary(&self, step_time: &i32) -> f64 {
         self.step * (*step_time as f64)
     }
-    fn get_render_boundary(&self) -> f64 {
+    pub fn get_render_boundary(&self) -> f64 {
         self.render_boundary
     }
-    fn get_horizon_boundary(&self) -> f64 {
+    pub fn get_horizon_boundary(&self) -> f64 {
         self.step * (*&store::statics::Number::ROW as f64)
     }
-    fn get_vertical_boundary(&self) -> f64 {
+    pub fn get_vertical_boundary(&self) -> f64 {
         self.step * (*&store::statics::Number::COLUMN as f64)
     }
-    fn get_rect_x(&self, position: &usize) -> f64 {
+    pub fn get_rect_x(&self, position: &usize) -> f64 {
         (((func::fix_digit(*position as i32) * self.step as i32) as f64) + (self.render_boundary + 1.0))
     }
-    fn get_rect_y(&self, position: &usize) -> f64 {
+    pub fn get_rect_y(&self, position: &usize) -> f64 {
         (round::floor((*position as i32 / store::statics::Number::ROW) as f64, 0) as f64)
                 * self.step
                 + (self.render_boundary + 1.0)
     }
-    fn get_rect_w(&self) -> f64 {
+    pub fn get_rect_w(&self) -> f64 {
         self.step - 2.0
     }
-    fn get_rect_h(&self) -> f64 {
+    pub fn get_rect_h(&self) -> f64 {
         self.step - 2.0
+    }
+
+
+    pub fn set_width(&mut self, width: u32) {
+        self.width = width
+    }
+    pub fn set_height(&mut self, height: u32) {
+        self.height = height
     }
 }

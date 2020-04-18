@@ -4,13 +4,13 @@ use std::iter::Iterator;
 
 use crate::store;
 
-use store::dynamics::render::field::{ Field as RenderField, Get as _, Update as _ };
+use store::dynamics::render::field::{ Field as RenderFieldContext };
 
-use store::dynamics::field::{ Field as GameField, Get as _ };
+use store::dynamics::field::{ Field as GameFieldContext };
 
-use store::dynamics::block::{ Block as BlockContext, Get as _ };
+use store::dynamics::block::{ Block as BlockContext };
 
-pub fn render_block(field: &RenderField, field_collection: &GameField, block_type: &BlockContext, context: &web_sys::CanvasRenderingContext2d) {
+pub fn render_block(field: &RenderFieldContext, field_collection: &GameFieldContext, block_type: &BlockContext, context: &web_sys::CanvasRenderingContext2d) {
     for (i, v) in field_collection.get_list().iter().enumerate() {
 
         // draw controllable block
@@ -29,7 +29,7 @@ pub fn render_block(field: &RenderField, field_collection: &GameField, block_typ
     }
 }
 
-pub fn clear_playing_block(field: &RenderField, field_collection: &GameField, context: &web_sys::CanvasRenderingContext2d) {
+pub fn clear_playing_block(field: &RenderFieldContext, field_collection: &GameFieldContext, context: &web_sys::CanvasRenderingContext2d) {
 
     for (i, v) in field_collection.get_list().iter().enumerate() {
 
@@ -40,7 +40,7 @@ pub fn clear_playing_block(field: &RenderField, field_collection: &GameField, co
     }
 }
 
-pub fn delete_completed_block(field: &RenderField, field_collection: &GameField, context: &web_sys::CanvasRenderingContext2d) {
+pub fn delete_completed_block(field: &RenderFieldContext, field_collection: &GameFieldContext, context: &web_sys::CanvasRenderingContext2d) {
     for v in field_collection.get_complete_row_numbers().iter() {
 
         for iter in 0..store::statics::Number::ROW {

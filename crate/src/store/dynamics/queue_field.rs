@@ -9,10 +9,6 @@ pub struct QueueField {
     line: Vec<i32>,
 }
 
-trait Update {
-    fn create_queue(&mut self, count: i32);
-}
-
 impl Default for QueueField {
     fn default() -> Self {
         Self {
@@ -22,8 +18,8 @@ impl Default for QueueField {
     }
 }
 
-impl Update for QueueField {
-    fn create_queue(&mut self, count: i32) {
+impl QueueField {
+    pub fn create_queue(&mut self, count: i32) {
         // delete first block
         if count >= 1 {
             self.line.drain(0..1);

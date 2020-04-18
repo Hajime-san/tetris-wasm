@@ -5,12 +5,9 @@ enum Complete {
     Success,
 }
 
-trait Check {
-    fn check_complete(&self, single_rows: &Vec<Vec<i32>>) -> Complete;
-}
 
-impl Check for Complete {
-    fn check_complete(&self, single_rows: &Vec<Vec<i32>>) -> Complete {
+impl Complete {
+    pub fn check_complete(&self, single_rows: &Vec<Vec<i32>>) -> Complete {
         let mut flag = Self::Failure;
         // check row
         for v in single_rows {

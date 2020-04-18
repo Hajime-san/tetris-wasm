@@ -10,17 +10,6 @@ pub struct Block {
     pub block_type: store::statics::BlockName,
 }
 
-pub trait Update {
-    fn update_current_positions(&mut self, moved_current_positions: &store::statics::BlockPosition);
-    fn reverse_angle(&mut self);
-}
-
-pub trait Get {
-    fn get_current_block_positions(&self) -> store::statics::BlockPosition;
-    fn get_current_block_type(&self) -> store::statics::BlockName;
-    fn get_moved_current_block_positions(&mut self, dir: &str) -> Result<store::statics::BlockPosition, ()>;
-    fn crate_rotate_block(&mut self, fix: bool) -> store::statics::BlockPosition;
-}
 
 impl Default for Block {
     fn default() -> Self {
@@ -32,17 +21,21 @@ impl Default for Block {
     }
 }
 
-impl Get for Block {
+impl Block {
 
-    fn get_current_block_positions(&self) -> store::statics::BlockPosition {
+    //
+    // get field value methods
+    //
+
+    pub fn get_current_block_positions(&self) -> store::statics::BlockPosition {
         self.positions
     }
 
-    fn get_current_block_type(&self) -> store::statics::BlockName {
+    pub fn get_current_block_type(&self) -> store::statics::BlockName {
         self.block_type
     }
 
-    fn get_moved_current_block_positions(&mut self, dir: &str) -> Result<store::statics::BlockPosition, ()> {
+    pub fn get_moved_current_block_positions(&mut self, dir: &str) -> Result<store::statics::BlockPosition, ()> {
         match dir {
             "left" => Ok(self
                 .positions
@@ -55,7 +48,7 @@ impl Get for Block {
         }
     }
 
-    fn crate_rotate_block(&mut self, fix: bool) -> store::statics::BlockPosition {
+    pub fn crate_rotate_block(&mut self, fix: bool) -> store::statics::BlockPosition {
         // update angle
         match self.angle {
             store::statics::Angle::Initial => self.angle = store::statics::Angle::Right,
@@ -172,16 +165,18 @@ impl Get for Block {
 
         rotate_blocks
     }
-}
 
-impl Update for Block {
 
-    fn update_current_positions(&mut self, moved_current_positions: &store::statics::BlockPosition) {
+    //
+    // update field value methods
+    //
+
+    pub fn update_current_positions(&mut self, moved_current_positions: &store::statics::BlockPosition) {
         self.positions = *moved_current_positions;
     }
 
     // when failure to rotate
-    fn reverse_angle(&mut self) {
+    pub fn reverse_angle(&mut self) {
         match self.angle {
             store::statics::Angle::Initial => self.angle = store::statics::Angle::Left,
             store::statics::Angle::Right => self.angle = store::statics::Angle::Initial,

@@ -10,21 +10,6 @@ pub struct Level {
     multiple_number: i32,
 }
 
-pub trait Update {
-    fn update_count(&mut self);
-    fn update_completed_row(&mut self, length: &Vec<i32>);
-    fn update_level_and_speed(&mut self);
-    fn update_score(&mut self, length: &Vec<i32>);
-}
-
-pub trait Get {
-    fn get_count(&self) -> &i32;
-    fn get_completed_row(&self) -> &i32;
-    fn get_speed(&self) -> &i32;
-    fn get_difficulty(&self) -> &i32;
-    fn get_score(&self) -> &i32;
-    fn get_multiple_number(&self) -> &i32;
-}
 
 impl Default for Level {
     fn default() -> Self {
@@ -39,18 +24,45 @@ impl Default for Level {
     }
 }
 
-impl Update for Level {
-    fn update_count(&mut self) {
+impl Level {
+    //
+    // get field value methods
+    //
+
+    pub fn get_count(&self) -> &i32 {
+        &self.count
+    }
+    pub fn get_completed_row(&self) -> &i32 {
+        &self.completed_row
+    }
+    pub fn get_speed(&self) -> &i32 {
+        &self.speed
+    }
+    pub fn get_difficulty(&self) -> &i32 {
+        &self.difficulty
+    }
+    pub fn get_score(&self) -> &i32 {
+        &self.score
+    }
+    pub fn get_multiple_number(&self) -> &i32 {
+        &self.multiple_number
+    }
+
+    //
+    // update field value methods
+    //
+
+    pub fn update_count(&mut self) {
         self.count += 1
     }
 
-    fn update_completed_row(&mut self, length: &Vec<i32>) {
+    pub fn update_completed_row(&mut self, length: &Vec<i32>) {
         let increment_number = length.len() as i32;
 
         self.completed_row += increment_number
     }
 
-    fn update_level_and_speed(&mut self) {
+    pub fn update_level_and_speed(&mut self) {
         const N: i32 = 10;
         if self.completed_row == 0 {
             return;
@@ -67,7 +79,7 @@ impl Update for Level {
         }
     }
 
-    fn update_score(&mut self, length: &Vec<i32>) {
+    pub fn update_score(&mut self, length: &Vec<i32>) {
         let completed_row = length.len() as i32;
 
         if completed_row == 0 {
@@ -88,26 +100,5 @@ impl Update for Level {
             let mut _score: f64 = round::floor(increment * ratio, 0) * 10.0;
             self.score += _score as i32;
         }
-    }
-}
-
-impl Get for Level {
-    fn get_count(&self) -> &i32 {
-        &self.count
-    }
-    fn get_completed_row(&self) -> &i32 {
-        &self.completed_row
-    }
-    fn get_speed(&self) -> &i32 {
-        &self.speed
-    }
-    fn get_difficulty(&self) -> &i32 {
-        &self.difficulty
-    }
-    fn get_score(&self) -> &i32 {
-        &self.score
-    }
-    fn get_multiple_number(&self) -> &i32 {
-        &self.multiple_number
     }
 }

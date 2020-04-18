@@ -8,13 +8,8 @@ pub enum GameState {
     Over,
 }
 
-trait Check {
-    fn check_playable(field: &Vec<i32>, current_block: &store::statics::BlockPosition)
-        -> GameState;
-}
-
-impl Check for GameState {
-    fn check_playable(
+impl GameState {
+    pub fn check_playable(
         field: &Vec<i32>,
         current_block: &store::statics::BlockPosition,
     ) -> GameState {

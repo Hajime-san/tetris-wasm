@@ -8,14 +8,13 @@ use crate::func;
 use crate::store;
 use crate::render;
 
-use store::dynamics::render::field::{ Field as RenderField, Get as _, Update as _, };
+use store::dynamics::render::field::{ Field as RenderFieldContext };
 
-use store::dynamics::field::{ Field as GameFieldContext, Get as _, Update as _, };
+use store::dynamics::field::{ Field as GameFieldContext };
 
-use store::dynamics::block::{ Block as BlockContext, Get as _, Update as _, };
+use store::dynamics::block::{ Block as BlockContext };
 
-use render::web::context_2d::util::*;
-use render::web::context_2d::block::*;
+use render::web::context_2d::block as RenderBlock;
 
 #[wasm_bindgen]
 extern "C" {
@@ -30,7 +29,7 @@ macro_rules! console_log {
 #[wasm_bindgen(start)]
 pub fn start() {
     // initialize Game field area size
-    let mut field: RenderField = Default::default();
+    let mut field: RenderFieldContext = Default::default();
     field.set_width(400);
     field.set_height(600);
 
@@ -105,36 +104,26 @@ pub fn start() {
 
     let mut field_collection: GameFieldContext = Default::default();
 
-    // field_collection.numbers[4] = 99;
-    // field_collection.numbers[5] = 99;
-    // field_collection.numbers[13] = 99;
-    // field_collection.numbers[14] = 99;
-
-    // field_collection.numbers[54] = 3;
-    // field_collection.numbers[64] = 3;
-    // field_collection.numbers[74] = 3;
-    // field_collection.numbers[84] = 3;
-
     let mut block: BlockContext = Default::default();
 
     let mut current_block_positions = block.get_current_block_positions();
 
     field_collection.transfer_current_block(&current_block_positions);
 
-    render_block(&field, &field_collection, &block, &context);
+    RenderBlock::render_block(&field, &field_collection, &block, &context);
 
-    let drawing_ok = Rc::new(Cell::new(false));
+    let user_input = Rc::new(Cell::new(false));
     {
-        let context = context.clone();
-        let drawing_ok = drawing_ok.clone();
+        // let context = context.clone();
+        // let user_input = user_input.clone();
         let closure = Closure::wrap(Box::new(move |event: web_sys::KeyboardEvent| {
             if event.key_code() == 40 {
-                clear_playing_block(&field, &field_collection, &context);
+                RenderBlock::clear_playing_block(&field, &field_collection, &context);
                 field_collection.clear_current_block(&current_block_positions);
                 current_block_positions = block.get_moved_current_block_positions("down").unwrap();
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
-                render_block(&field, &field_collection, &block, &context);
+                RenderBlock::render_block(&field, &field_collection, &block, &context);
                 console_log!("console.log from Rust with WebAssembly {:?}", &current_block_positions);
             }
         }) as Box<dyn FnMut(_)>);

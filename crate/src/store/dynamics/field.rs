@@ -23,22 +23,23 @@ impl Default for Field {
     }
 }
 
-pub trait Update {
-    fn transfer_to_fixed_number(&mut self, block_type: &i32);
-    fn clear_current_block(&mut self, potisions: &store::statics::BlockPosition);
-    fn transfer_current_block(&mut self, potisions: &store::statics::BlockPosition);
-    fn create_single_rows(&mut self);
-    fn delete_row(&mut self);
-    fn drop_row(&mut self);
-}
+impl Field {
+    //
+    // get field value methods
+    //
 
-pub trait Get {
-    fn get_list(&self) -> &Vec<i32>;
-    fn get_complete_row_numbers(&self) -> &Vec<i32>;
-}
+    pub fn get_list(&self) -> &Vec<i32> {
+        &self.list
+    }
+    pub fn get_complete_row_numbers(&self) -> &Vec<i32> {
+        &self.complete_row_numbers
+    }
 
-impl Update for Field {
-    fn transfer_to_fixed_number(&mut self, block_type: &i32) {
+    //
+    // update field value methods
+    //
+
+    pub fn transfer_to_fixed_number(&mut self, block_type: &i32) {
         let iter_field = self.list.clone();
 
         for (i, v) in iter_field.iter().enumerate() {
@@ -48,19 +49,19 @@ impl Update for Field {
         }
     }
 
-    fn clear_current_block(&mut self, potisions: &store::statics::BlockPosition) {
+    pub fn clear_current_block(&mut self, potisions: &store::statics::BlockPosition) {
         for v in potisions {
             self.list[*v as usize] = store::statics::Number::EMPTY;
         }
     }
 
-    fn transfer_current_block(&mut self, potisions: &store::statics::BlockPosition) {
+    pub fn transfer_current_block(&mut self, potisions: &store::statics::BlockPosition) {
         for v in potisions {
             self.list[*v as usize] = store::statics::Number::CURRENT;
         }
     }
 
-    fn create_single_rows(&mut self) {
+    pub fn create_single_rows(&mut self) {
         // creat vector on each rows
         let mut start = 0;
         let mut end = store::statics::Number::ROW;
@@ -73,7 +74,7 @@ impl Update for Field {
         }
     }
 
-    fn delete_row(&mut self) {
+    pub fn delete_row(&mut self) {
         // create arrays for deleting rows
         let mut delete_row_array: Vec<i32> = vec![]; // should delete areas
 
@@ -108,7 +109,7 @@ impl Update for Field {
         }
     }
 
-    fn drop_row(&mut self) {
+    pub fn drop_row(&mut self) {
         // first, drop remainRow
 
         if self.remain_row_numbers.len() > 0 {
@@ -154,15 +155,6 @@ impl Update for Field {
                 }
             }
         }
-    }
-}
-
-impl Get for Field {
-    fn get_list(&self) -> &Vec<i32> {
-        &self.list
-    }
-    fn get_complete_row_numbers(&self) -> &Vec<i32> {
-        &self.complete_row_numbers
     }
 }
 
