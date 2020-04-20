@@ -6,15 +6,18 @@ use wasm_bindgen::JsCast;
 
 use crate::func;
 use crate::store;
+use crate::state;
 use crate::render;
 
-use store::dynamics::render::field::{ Field as RenderFieldContext };
+use store::dynamics::render::field::Field as RenderFieldContext;
 
-use store::dynamics::field::{ Field as GameFieldContext };
+use store::dynamics::field::Field as GameFieldContext;
 
-use store::dynamics::block::{ Block as BlockContext };
+use store::dynamics::block::Block as BlockContext;
 
 use render::web::context_2d::block as RenderBlock;
+
+use state::movable as MoveFlag;
 
 #[wasm_bindgen]
 extern "C" {
@@ -102,6 +105,9 @@ pub fn start() {
     }
     context.stroke_with_path(&grid);
 
+
+
+
     let mut field_collection: GameFieldContext = Default::default();
 
     let mut block: BlockContext = Default::default();
@@ -115,15 +121,21 @@ pub fn start() {
     let user_input = Rc::new(Cell::new(false));
     {
         // let context = context.clone();
-        // let user_input = user_input.clone();
+        let user_input = user_input.clone();
+
         let closure = Closure::wrap(Box::new(move |event: web_sys::KeyboardEvent| {
-            if event.key_code() == 40 {
+            let mut down = MoveFlag::down(&field_collection, &current_block_positions);
+            console_log!("{:?}", down);
+
+            if event.key_code() == store::statics::Number::DOWN_KEY as u32 && down {
+
                 RenderBlock::clear_playing_block(&field, &field_collection, &context);
                 field_collection.clear_current_block(&current_block_positions);
                 current_block_positions = block.get_moved_current_block_positions("down").unwrap();
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
                 RenderBlock::render_block(&field, &field_collection, &block, &context);
+                down = MoveFlag::down(&field_collection, &current_block_positions);
                 console_log!("console.log from Rust with WebAssembly {:?}", &current_block_positions);
             }
         }) as Box<dyn FnMut(_)>);

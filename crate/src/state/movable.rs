@@ -1,7 +1,10 @@
 use crate::func;
 use crate::store;
 
-pub fn movable_left(field: &Vec<i32>, current_block: &store::statics::BlockPosition) -> bool {
+use store::dynamics::field::Field as GameFieldContext;
+use store::dynamics::block::Block as BlockContext;
+
+pub fn left(field: &Vec<i32>, current_block: &store::statics::BlockPosition) -> bool {
     let mut flag = false;
 
     // check fixed block
@@ -23,7 +26,7 @@ pub fn movable_left(field: &Vec<i32>, current_block: &store::statics::BlockPosit
     flag
 }
 
-pub fn movable_right(field: &Vec<i32>, current_block: &store::statics::BlockPosition) -> bool {
+pub fn right(field: &Vec<i32>, current_block: &store::statics::BlockPosition) -> bool {
     let mut flag = false;
 
     // check fixed block
@@ -47,31 +50,39 @@ pub fn movable_right(field: &Vec<i32>, current_block: &store::statics::BlockPosi
     flag
 }
 
-pub fn movable_down(field: &Vec<i32>, current_block: &store::statics::BlockPosition) -> bool {
-    let mut flag = false;
+pub fn down(field_collection: &GameFieldContext, current_block: &store::statics::BlockPosition) -> bool {
+    let mut flag = true;
+
+    let field = field_collection.get_list();
 
     // check fixed block
-    for (i, _v) in field.iter().enumerate() {
-        for _ in current_block {
-            if field[i - store::statics::Number::ROW as usize] == store::statics::Number::CURRENT {
-                flag = true;
-            }
+    for (i, v) in field.iter().enumerate() {
+
+        let index = i as i32 - store::statics::Number::ROW;
+        if index < 0 {
+            continue;
         }
+
+        let skip_current = v != &store::statics::Number::CURRENT && v != &store::statics::Number::EMPTY;
+
+
+            if &field[index as usize] == &store::statics::Number::CURRENT && skip_current {
+                flag = false;
+            }
     }
 
-    // check side wall
+    // check last row
     for v in current_block {
-        if func::fix_digit(*v)
-            == func::fix_digit(store::statics::Number::ROW + store::statics::Number::LEFT_MOVE)
-        {
-            flag = true;
+        let is_last_row = field.iter().any(|&x| v >= &(field.len() as i32 - store::statics::Number::ROW));
+        if is_last_row {
+            flag = false;
         }
     }
 
     flag
 }
 
-pub fn movable_rotate(field: &Vec<i32>, tmp_block: &store::statics::BlockPosition) -> bool {
+pub fn rotate(field: &Vec<i32>, tmp_block: &store::statics::BlockPosition) -> bool {
     let mut left_wall = true;
     let mut right_wall = true;
     let mut down_wall = true;
