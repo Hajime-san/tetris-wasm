@@ -4,36 +4,65 @@ use crate::store;
 use store::dynamics::field::Field as GameFieldContext;
 use store::dynamics::block::Block as BlockContext;
 
-pub fn left(field: &Vec<i32>, current_block: &store::statics::BlockPosition) -> bool {
-    let mut flag = false;
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(a: &str);
+}
+
+macro_rules! console_log {
+    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+}
+
+
+pub fn left(field_collection: &GameFieldContext, current_block: &store::statics::BlockPosition) -> bool {
+    let mut flag = true;
+
+    let field = field_collection.get_list();
 
     // check fixed block
-    for (i, _v) in field.iter().enumerate() {
-        for w in current_block {
-            if *w as usize == (i + store::statics::Number::RIGHT_MOVE as usize) {
-                flag = true;
+    for (i, v) in field.iter().enumerate() {
+        let fixed_blocks = v != &store::statics::Number::CURRENT && v != &store::statics::Number::EMPTY;
+
+        if fixed_blocks {
+
+            for w in current_block {
+                if (w + &store::statics::Number::LEFT_MOVE) == i as i32 {
+                    flag = false;
+                }
             }
         }
     }
 
     // check side wall
     for v in current_block {
-        if func::fix_digit(*v) == func::fix_digit(store::statics::Number::ROW) {
-            flag = true;
+        if func::fix_digit(*v)
+            == func::fix_digit(store::statics::Number::ROW)
+        {
+            flag = false;
         }
     }
 
     flag
 }
 
-pub fn right(field: &Vec<i32>, current_block: &store::statics::BlockPosition) -> bool {
-    let mut flag = false;
+pub fn right(field_collection: &GameFieldContext, current_block: &store::statics::BlockPosition) -> bool {
+    let mut flag = true;
+
+    let field = field_collection.get_list();
 
     // check fixed block
-    for (i, _v) in field.iter().enumerate() {
-        for w in current_block {
-            if *w as usize == (i + store::statics::Number::LEFT_MOVE as usize) {
-                flag = true;
+    for (i, v) in field.iter().enumerate() {
+        let fixed_blocks = v != &store::statics::Number::CURRENT && v != &store::statics::Number::EMPTY;
+
+        if fixed_blocks {
+
+            for w in current_block {
+                if (w + &store::statics::Number::RIGHT_MOVE) == i as i32 {
+                    flag = false;
+                }
             }
         }
     }
@@ -43,7 +72,7 @@ pub fn right(field: &Vec<i32>, current_block: &store::statics::BlockPosition) ->
         if func::fix_digit(*v)
             == func::fix_digit(store::statics::Number::ROW + store::statics::Number::LEFT_MOVE)
         {
-            flag = true;
+            flag = false;
         }
     }
 
@@ -58,15 +87,16 @@ pub fn down(field_collection: &GameFieldContext, current_block: &store::statics:
     // check fixed block
     for (i, v) in field.iter().enumerate() {
 
+        // pass runtime error, when access values that outs of vector length
         let index = i as i32 - store::statics::Number::ROW;
         if index < 0 {
             continue;
         }
 
-        let skip_current = v != &store::statics::Number::CURRENT && v != &store::statics::Number::EMPTY;
+        let fixed_blocks = v != &store::statics::Number::CURRENT && v != &store::statics::Number::EMPTY;
 
 
-            if &field[index as usize] == &store::statics::Number::CURRENT && skip_current {
+            if &field[index as usize] == &store::statics::Number::CURRENT && fixed_blocks {
                 flag = false;
             }
     }
@@ -82,10 +112,12 @@ pub fn down(field_collection: &GameFieldContext, current_block: &store::statics:
     flag
 }
 
-pub fn rotate(field: &Vec<i32>, tmp_block: &store::statics::BlockPosition) -> bool {
+pub fn rotate(field_collection: &GameFieldContext, tmp_block: &store::statics::BlockPosition) -> bool {
     let mut left_wall = true;
     let mut right_wall = true;
     let mut down_wall = true;
+
+    let field = field_collection.get_list();
 
     // wall check down/left/right
     for v in tmp_block {

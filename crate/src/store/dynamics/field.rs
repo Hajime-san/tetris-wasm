@@ -4,7 +4,7 @@ pub const FIELD_LENGTH: i32 = store::statics::Number::ROW * store::statics::Numb
 
 #[derive(Debug)]
 pub struct Field {
-    list: Vec<i32>,
+    pub list: Vec<i32>,
     single_rows: Vec<Vec<i32>>,
     complete_row_numbers: Vec<i32>,
     remain_rows: Vec<Vec<i32>>,

@@ -116,6 +116,8 @@ pub fn start() {
 
     field_collection.transfer_current_block(&current_block_positions);
 
+    //field_collection.list[10] = 2;
+
     RenderBlock::render_block(&field, &field_collection, &block, &context);
 
     let user_input = Rc::new(Cell::new(false));
@@ -124,20 +126,33 @@ pub fn start() {
         let user_input = user_input.clone();
 
         let closure = Closure::wrap(Box::new(move |event: web_sys::KeyboardEvent| {
-            let mut down = MoveFlag::down(&field_collection, &current_block_positions);
-            console_log!("{:?}", down);
-
-            if event.key_code() == store::statics::Number::DOWN_KEY as u32 && down {
+            let mut left = MoveFlag::left(&field_collection, &current_block_positions);
+            if event.key_code() == store::statics::Number::LEFT_KEY as u32 && left {
 
                 RenderBlock::clear_playing_block(&field, &field_collection, &context);
                 field_collection.clear_current_block(&current_block_positions);
-                current_block_positions = block.get_moved_current_block_positions("down").unwrap();
+                current_block_positions = block.get_moved_current_block_positions("left").unwrap();
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
                 RenderBlock::render_block(&field, &field_collection, &block, &context);
-                down = MoveFlag::down(&field_collection, &current_block_positions);
+                left = MoveFlag::left(&field_collection, &current_block_positions);
                 console_log!("console.log from Rust with WebAssembly {:?}", &current_block_positions);
             }
+
+            let mut right = MoveFlag::right(&field_collection, &current_block_positions);
+            if event.key_code() == store::statics::Number::RIGHT_KEY as u32 && right {
+
+                RenderBlock::clear_playing_block(&field, &field_collection, &context);
+                field_collection.clear_current_block(&current_block_positions);
+                current_block_positions = block.get_moved_current_block_positions("right").unwrap();
+                block.update_current_positions(&current_block_positions);
+                field_collection.transfer_current_block(&current_block_positions);
+                RenderBlock::render_block(&field, &field_collection, &block, &context);
+                right = MoveFlag::right(&field_collection, &current_block_positions);
+                console_log!("console.log from Rust with WebAssembly {:?}", &current_block_positions);
+            }
+
+
         }) as Box<dyn FnMut(_)>);
         document.add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref());
         closure.forget();
