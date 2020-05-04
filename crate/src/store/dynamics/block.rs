@@ -5,9 +5,11 @@ use crate::store;
 
 #[derive(Debug)]
 pub struct Block {
-    pub positions: store::statics::BlockPosition,
-    pub angle: store::statics::Angle,
-    pub block_type: store::statics::BlockName,
+    positions: store::statics::BlockPosition,
+    _positions: store::statics::BlockPosition,
+    angle: store::statics::Angle,
+    _angle: store::statics::Angle,
+    block_type: store::statics::BlockName,
 }
 
 
@@ -15,7 +17,9 @@ impl Default for Block {
     fn default() -> Self {
         Self {
             positions: [5, 6, 14, 15],
+            _positions: [5, 15, 16, 26],
             angle: store::statics::Angle::Right,
+            _angle: store::statics::Angle::Down,
             block_type: store::statics::BlockName::S_mino,
         }
     }

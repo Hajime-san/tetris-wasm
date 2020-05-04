@@ -142,16 +142,18 @@ pub fn rotate(field_collection: &GameFieldContext, tmp_block: &store::statics::B
     let mut is_filled = true;
 
     for (i, v) in field.iter().enumerate() {
-        if *v != store::statics::Number::CURRENT || *v != store::statics::Number::EMPTY {
-            break;
-        }
 
-        for w in tmp_block {
-            if i == *w as usize {
-                is_filled = false;
+        let fixed_blocks = v != &store::statics::Number::CURRENT && v != &store::statics::Number::EMPTY;
+
+        if fixed_blocks {
+            for w in tmp_block {
+                if i == *w as usize {
+                    is_filled = false;
+                }
             }
         }
     }
+
 
     if !left_wall && !right_wall || !down_wall || !is_filled {
         false

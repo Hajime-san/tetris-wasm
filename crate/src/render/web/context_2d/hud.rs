@@ -4,19 +4,14 @@ use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
-use crate::func;
 use crate::store;
 use crate::state;
 use crate::render;
 
 use store::dynamics::render::field::Field as RenderFieldContext;
-
 use store::dynamics::field::Field as GameFieldContext;
-
 use store::dynamics::block::Block as BlockContext;
-
 use render::web::context_2d::block as RenderBlock;
-
 use state::movable as MoveFlag;
 
 #[wasm_bindgen]
@@ -116,7 +111,8 @@ pub fn start() {
 
     field_collection.transfer_current_block(&current_block_positions);
 
-    //field_collection.list[10] = 2;
+    field_collection.list[24] = 2;
+    field_collection.list[68] = 0;
 
     RenderBlock::render_block(&field, &field_collection, &block, &context);
 
@@ -152,6 +148,31 @@ pub fn start() {
                 console_log!("console.log from Rust with WebAssembly {:?}", &current_block_positions);
             }
 
+            let mut down = MoveFlag::down(&field_collection, &current_block_positions);
+            if event.key_code() == store::statics::Number::DOWN_KEY as u32 && down {
+
+                RenderBlock::clear_playing_block(&field, &field_collection, &context);
+                field_collection.clear_current_block(&current_block_positions);
+                current_block_positions = block.get_moved_current_block_positions("down").unwrap();
+                block.update_current_positions(&current_block_positions);
+                field_collection.transfer_current_block(&current_block_positions);
+                RenderBlock::render_block(&field, &field_collection, &block, &context);
+                down = MoveFlag::down(&field_collection, &current_block_positions);
+                console_log!("console.log from Rust with WebAssembly {:?}", &current_block_positions);
+            }
+
+            let mut rotate = MoveFlag::rotate(&field_collection, &current_block_positions);
+            if event.key_code() == store::statics::Number::UP_KEY as u32 && rotate {
+
+                RenderBlock::clear_playing_block(&field, &field_collection, &context);
+                field_collection.clear_current_block(&current_block_positions);
+                current_block_positions = block.crate_rotate_block(true);
+                block.update_current_positions(&current_block_positions);
+                field_collection.transfer_current_block(&current_block_positions);
+                RenderBlock::render_block(&field, &field_collection, &block, &context);
+                rotate = MoveFlag::rotate(&field_collection, &current_block_positions);
+                console_log!("console.log from Rust with WebAssembly {:?}", &current_block_positions);
+            }
 
         }) as Box<dyn FnMut(_)>);
         document.add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref());

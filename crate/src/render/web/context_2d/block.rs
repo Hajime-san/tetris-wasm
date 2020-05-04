@@ -3,11 +3,8 @@ use wasm_bindgen::prelude::*;
 use std::iter::Iterator;
 
 use crate::store;
-
 use store::dynamics::render::field::Field as RenderFieldContext;
-
 use store::dynamics::field::Field as GameFieldContext;
-
 use store::dynamics::block::Block as BlockContext;
 
 pub fn render_block(field: &RenderFieldContext, field_collection: &GameFieldContext, block_type: &BlockContext, context: &web_sys::CanvasRenderingContext2d) {
