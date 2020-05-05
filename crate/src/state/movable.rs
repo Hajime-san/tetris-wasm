@@ -2,7 +2,6 @@ use crate::func;
 use crate::store;
 
 use store::dynamics::field::Field as GameFieldContext;
-use store::dynamics::block::Block as BlockContext;
 
 use wasm_bindgen::prelude::*;
 
@@ -11,11 +10,6 @@ extern "C" {
     #[wasm_bindgen(js_namespace = console)]
     fn log(a: &str);
 }
-
-macro_rules! console_log {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-}
-
 
 pub fn left(field_collection: &GameFieldContext, current_block: &store::statics::BlockPosition) -> bool {
     let mut flag = true;
@@ -103,7 +97,9 @@ pub fn down(field_collection: &GameFieldContext, current_block: &store::statics:
 
     // check last row
     for v in current_block {
-        let is_last_row = field.iter().any(|&x| v >= &(field.len() as i32 - store::statics::Number::ROW));
+        let is_last_row = field
+                    .iter()
+                    .any(|_| v >= &(field.len() as i32 - store::statics::Number::ROW));
         if is_last_row {
             flag = false;
         }
@@ -123,7 +119,7 @@ pub fn rotate(field_collection: &GameFieldContext, tmp_block: &store::statics::B
     for v in tmp_block {
         let is_last_row = field
             .iter()
-            .any(|&x| x >= field.len() as i32 - store::statics::Number::ROW);
+            .any(|_| v >= &(field.len() as i32));
 
         if is_last_row {
             down_wall = false;

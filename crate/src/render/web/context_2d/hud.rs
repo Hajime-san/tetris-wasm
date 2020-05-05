@@ -122,8 +122,9 @@ pub fn start() {
         let user_input = user_input.clone();
 
         let closure = Closure::wrap(Box::new(move |event: web_sys::KeyboardEvent| {
-            let mut left = MoveFlag::left(&field_collection, &current_block_positions);
-            if event.key_code() == store::statics::Number::LEFT_KEY as u32 && left {
+
+            let is_left = MoveFlag::left(&field_collection, &current_block_positions);
+            if event.key_code() == store::statics::Number::LEFT_KEY as u32 && is_left {
 
                 RenderBlock::clear_playing_block(&field, &field_collection, &context);
                 field_collection.clear_current_block(&current_block_positions);
@@ -131,12 +132,10 @@ pub fn start() {
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
                 RenderBlock::render_block(&field, &field_collection, &block, &context);
-                left = MoveFlag::left(&field_collection, &current_block_positions);
-                console_log!("console.log from Rust with WebAssembly {:?}", &current_block_positions);
             }
 
-            let mut right = MoveFlag::right(&field_collection, &current_block_positions);
-            if event.key_code() == store::statics::Number::RIGHT_KEY as u32 && right {
+            let is_right = MoveFlag::right(&field_collection, &current_block_positions);
+            if event.key_code() == store::statics::Number::RIGHT_KEY as u32 && is_right {
 
                 RenderBlock::clear_playing_block(&field, &field_collection, &context);
                 field_collection.clear_current_block(&current_block_positions);
@@ -144,12 +143,10 @@ pub fn start() {
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
                 RenderBlock::render_block(&field, &field_collection, &block, &context);
-                right = MoveFlag::right(&field_collection, &current_block_positions);
-                console_log!("console.log from Rust with WebAssembly {:?}", &current_block_positions);
             }
 
-            let mut down = MoveFlag::down(&field_collection, &current_block_positions);
-            if event.key_code() == store::statics::Number::DOWN_KEY as u32 && down {
+            let is_down = MoveFlag::down(&field_collection, &current_block_positions);
+            if event.key_code() == store::statics::Number::DOWN_KEY as u32 && is_down {
 
                 RenderBlock::clear_playing_block(&field, &field_collection, &context);
                 field_collection.clear_current_block(&current_block_positions);
@@ -157,14 +154,10 @@ pub fn start() {
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
                 RenderBlock::render_block(&field, &field_collection, &block, &context);
-                down = MoveFlag::down(&field_collection, &current_block_positions);
-                console_log!("console.log from Rust with WebAssembly {:?}", &current_block_positions);
             }
 
-            let mut rotate = MoveFlag::rotate(&field_collection, &block.crate_rotate_block("simulate", true));
-            console_log!("{:?}", rotate);
-
-            if event.key_code() == store::statics::Number::UP_KEY as u32 && rotate {
+            let is_rotate = MoveFlag::rotate(&field_collection, &block.crate_rotate_block("simulate", true));
+            if event.key_code() == store::statics::Number::UP_KEY as u32 && is_rotate {
 
                 RenderBlock::clear_playing_block(&field, &field_collection, &context);
                 field_collection.clear_current_block(&current_block_positions);
@@ -172,8 +165,6 @@ pub fn start() {
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
                 RenderBlock::render_block(&field, &field_collection, &block, &context);
-                rotate = MoveFlag::rotate(&field_collection, &current_block_positions);
-                console_log!("console.log from Rust with WebAssembly {:?}", &current_block_positions);
             }
 
         }) as Box<dyn FnMut(_)>);
