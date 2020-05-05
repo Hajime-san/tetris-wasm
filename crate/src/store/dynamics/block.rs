@@ -3,12 +3,23 @@ use arraytools::ArrayTools;
 use crate::func;
 use crate::store;
 
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(a: &str);
+}
+
+macro_rules! console_log {
+    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+}
+
 #[derive(Debug)]
 pub struct Block {
     positions: store::statics::BlockPosition,
-    _positions: store::statics::BlockPosition,
     angle: store::statics::Angle,
-    _angle: store::statics::Angle,
+    next_angle: store::statics::Angle,
     block_type: store::statics::BlockName,
 }
 
@@ -17,9 +28,8 @@ impl Default for Block {
     fn default() -> Self {
         Self {
             positions: [5, 6, 14, 15],
-            _positions: [5, 15, 16, 26],
             angle: store::statics::Angle::Right,
-            _angle: store::statics::Angle::Down,
+            next_angle: store::statics::Angle::Right,
             block_type: store::statics::BlockName::S_mino,
         }
     }
@@ -52,13 +62,23 @@ impl Block {
         }
     }
 
-    pub fn crate_rotate_block(&mut self, fix: bool) -> store::statics::BlockPosition {
+    pub fn crate_rotate_block(&mut self, option: &str, fix: bool) -> store::statics::BlockPosition {
+
         // update angle
-        match self.angle {
-            store::statics::Angle::Initial => self.angle = store::statics::Angle::Right,
-            store::statics::Angle::Right => self.angle = store::statics::Angle::Down,
-            store::statics::Angle::Down => self.angle = store::statics::Angle::Left,
-            store::statics::Angle::Left => self.angle = store::statics::Angle::Initial,
+        if option == "fixed" {
+            match self.angle {
+                store::statics::Angle::Initial => self.angle = store::statics::Angle::Right,
+                store::statics::Angle::Right => self.angle = store::statics::Angle::Down,
+                store::statics::Angle::Down => self.angle = store::statics::Angle::Left,
+                store::statics::Angle::Left => self.angle = store::statics::Angle::Initial,
+            }
+        } else {
+            match self.angle {
+                store::statics::Angle::Initial => self.next_angle = store::statics::Angle::Right,
+                store::statics::Angle::Right => self.next_angle = store::statics::Angle::Down,
+                store::statics::Angle::Down => self.next_angle = store::statics::Angle::Left,
+                store::statics::Angle::Left => self.next_angle = store::statics::Angle::Initial,
+            }
         }
 
         // position of organization point
@@ -77,56 +97,107 @@ impl Block {
             store::statics::BlockName::I_mino => {
                 center = 1;
 
-                match self.angle {
-                    store::statics::Angle::Initial => fix_position = 0,
-                    store::statics::Angle::Left => fix_position = 0,
-                    _ => fix_position = 1,
+                if option == "fixed" {
+                    match self.angle {
+                        store::statics::Angle::Initial => fix_position = 0,
+                        store::statics::Angle::Left => fix_position = 0,
+                        _ => fix_position = 1,
+                    }
+                } else {
+                    match self.next_angle {
+                        store::statics::Angle::Initial => fix_position = 0,
+                        store::statics::Angle::Left => fix_position = 0,
+                        _ => fix_position = 1,
+                    }
                 }
             }
             store::statics::BlockName::J_mino => {
                 fix_position = 0;
 
-                match self.angle {
-                    store::statics::Angle::Initial => center = 2,
-                    store::statics::Angle::Right => center = 2,
-                    _ => center = 1,
+                if option == "fixed" {
+                    match self.angle {
+                        store::statics::Angle::Initial => center = 2,
+                        store::statics::Angle::Right => center = 2,
+                        _ => center = 1,
+                    }
+                } else {
+                    match self.next_angle {
+                        store::statics::Angle::Initial => center = 2,
+                        store::statics::Angle::Right => center = 2,
+                        _ => center = 1,
+                    }
                 }
             }
             store::statics::BlockName::L_mino => {
                 fix_position = 0;
 
-                match self.angle {
-                    store::statics::Angle::Initial => center = 1,
-                    store::statics::Angle::Right => center = 2,
-                    store::statics::Angle::Down => center = 2,
-                    store::statics::Angle::Left => center = 1,
+                if option == "fixed" {
+                    match self.angle {
+                        store::statics::Angle::Initial => center = 1,
+                        store::statics::Angle::Right => center = 2,
+                        store::statics::Angle::Down => center = 2,
+                        store::statics::Angle::Left => center = 1,
+                    }
+                } else {
+                    match self.next_angle {
+                        store::statics::Angle::Initial => center = 1,
+                        store::statics::Angle::Right => center = 2,
+                        store::statics::Angle::Down => center = 2,
+                        store::statics::Angle::Left => center = 1,
+                    }
                 }
             }
             store::statics::BlockName::T_mino => {
                 fix_position = 0;
 
-                match self.angle {
-                    store::statics::Angle::Initial => center = 0,
-                    store::statics::Angle::Right => center = 2,
-                    store::statics::Angle::Down => center = 3,
-                    store::statics::Angle::Left => center = 1,
+                if option == "fixed" {
+                    match self.angle {
+                        store::statics::Angle::Initial => center = 0,
+                        store::statics::Angle::Right => center = 2,
+                        store::statics::Angle::Down => center = 3,
+                        store::statics::Angle::Left => center = 1,
+                    }
+                } else {
+                    match self.next_angle {
+                        store::statics::Angle::Initial => center = 0,
+                        store::statics::Angle::Right => center = 2,
+                        store::statics::Angle::Down => center = 3,
+                        store::statics::Angle::Left => center = 1,
+                    }
                 }
             }
             store::statics::BlockName::S_mino => {
                 fix_position = 0;
 
-                match self.angle {
-                    store::statics::Angle::Initial => {
-                        center = 3;
-                        fix_position =
-                            -(store::statics::Number::ROW + store::statics::Number::RIGHT_MOVE);
+                if option == "fixed" {
+                    match self.angle {
+                        store::statics::Angle::Initial => {
+                            center = 3;
+                            fix_position =
+                                -(store::statics::Number::ROW + store::statics::Number::RIGHT_MOVE);
+                        }
+                        store::statics::Angle::Right => center = 2,
+                        store::statics::Angle::Down => center = 3,
+                        store::statics::Angle::Left => {
+                            center = 2;
+                            fix_position =
+                                store::statics::Number::ROW + store::statics::Number::LEFT_MOVE;
+                        }
                     }
-                    store::statics::Angle::Right => center = 2,
-                    store::statics::Angle::Down => center = 3,
-                    store::statics::Angle::Left => {
-                        center = 2;
-                        fix_position =
-                            store::statics::Number::ROW + store::statics::Number::LEFT_MOVE;
+                } else {
+                    match self.next_angle {
+                        store::statics::Angle::Initial => {
+                            center = 3;
+                            fix_position =
+                                -(store::statics::Number::ROW + store::statics::Number::RIGHT_MOVE);
+                        }
+                        store::statics::Angle::Right => center = 2,
+                        store::statics::Angle::Down => center = 3,
+                        store::statics::Angle::Left => {
+                            center = 2;
+                            fix_position =
+                                store::statics::Number::ROW + store::statics::Number::LEFT_MOVE;
+                        }
                     }
                 }
             }
@@ -134,18 +205,34 @@ impl Block {
                 center = 2;
                 fix_position = 0;
 
-                match self.angle {
-                    store::statics::Angle::Initial => {
-                        fix_position =
-                            -(store::statics::Number::ROW + store::statics::Number::RIGHT_MOVE)
-                    }
-                    store::statics::Angle::Left => {
-                        fix_position =
-                            store::statics::Number::ROW + store::statics::Number::LEFT_MOVE
-                    }
+                if option == "fixed" {
+                    match self.angle {
+                        store::statics::Angle::Initial => {
+                            fix_position =
+                                -(store::statics::Number::ROW + store::statics::Number::RIGHT_MOVE)
+                        }
+                        store::statics::Angle::Left => {
+                            fix_position =
+                                store::statics::Number::ROW + store::statics::Number::LEFT_MOVE
+                        }
 
-                    // return fix_position = 0, that declared upper scope
-                    _ => (),
+                        // return fix_position = 0, that declared upper scope
+                        _ => (),
+                    }
+                } else {
+                    match self.next_angle {
+                        store::statics::Angle::Initial => {
+                            fix_position =
+                                -(store::statics::Number::ROW + store::statics::Number::RIGHT_MOVE)
+                        }
+                        store::statics::Angle::Left => {
+                            fix_position =
+                                store::statics::Number::ROW + store::statics::Number::LEFT_MOVE
+                        }
+
+                        // return fix_position = 0, that declared upper scope
+                        _ => (),
+                    }
                 }
             }
         }

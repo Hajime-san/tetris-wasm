@@ -161,12 +161,14 @@ pub fn start() {
                 console_log!("console.log from Rust with WebAssembly {:?}", &current_block_positions);
             }
 
-            let mut rotate = MoveFlag::rotate(&field_collection, &current_block_positions);
+            let mut rotate = MoveFlag::rotate(&field_collection, &block.crate_rotate_block("simulate", true));
+            console_log!("{:?}", rotate);
+
             if event.key_code() == store::statics::Number::UP_KEY as u32 && rotate {
 
                 RenderBlock::clear_playing_block(&field, &field_collection, &context);
                 field_collection.clear_current_block(&current_block_positions);
-                current_block_positions = block.crate_rotate_block(true);
+                current_block_positions = block.crate_rotate_block("fixed", true);
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
                 RenderBlock::render_block(&field, &field_collection, &block, &context);
