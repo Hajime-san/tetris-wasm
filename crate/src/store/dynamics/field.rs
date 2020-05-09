@@ -2,6 +2,7 @@ use crate::store;
 
 pub const FIELD_LENGTH: i32 = store::statics::Number::ROW * store::statics::Number::COLUMN;
 
+
 #[derive(Debug)]
 pub struct Field {
     pub list: Vec<i32>,
@@ -30,6 +31,9 @@ impl Field {
 
     pub fn get_list(&self) -> &Vec<i32> {
         &self.list
+    }
+    pub fn get_single_rows(&self) -> &Vec<Vec<i32>> {
+        &self.single_rows
     }
     pub fn get_complete_row_numbers(&self) -> &Vec<i32> {
         &self.complete_row_numbers
@@ -62,12 +66,15 @@ impl Field {
     }
 
     pub fn create_single_rows(&mut self) {
+        // initialize
+        self.single_rows = vec![];
+
         // creat vector on each rows
         let mut start = 0;
         let mut end = store::statics::Number::ROW;
 
         for _ in 0..store::statics::Number::COLUMN {
-            let row: Vec<i32> = (self.list[start as usize]..self.list[end as usize]).collect();
+            let row = self.list[(start as usize)..(end as usize)].to_vec();
             start += store::statics::Number::ROW;
             end += store::statics::Number::ROW;
             self.single_rows.push(row);

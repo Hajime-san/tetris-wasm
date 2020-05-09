@@ -11,8 +11,9 @@ use crate::render;
 use store::dynamics::render::field::Field as RenderFieldContext;
 use store::dynamics::field::Field as GameFieldContext;
 use store::dynamics::block::Block as BlockContext;
-use render::web::context_2d::block as RenderBlock;
+use render::web::context_2d::block as Render2d;
 use state::movable as MoveFlag;
+use state::complete::Complete as CheckBlockCompleteFlag;
 
 #[wasm_bindgen]
 extern "C" {
@@ -113,8 +114,20 @@ pub fn start() {
 
     field_collection.list[24] = 2;
     field_collection.list[68] = 0;
+    field_collection.list[150] = 0;
+    field_collection.list[151] = 0;
+    field_collection.list[152] = 0;
+    field_collection.list[155] = 0;
+    field_collection.list[156] = 0;
+    field_collection.list[157] = 0;
+    field_collection.list[158] = 0;
+    field_collection.list[159] = 0;
 
-    RenderBlock::render_block(&field, &field_collection, &block, &context);
+    Render2d::render_block(&field, &field_collection, &block, &context);
+
+    field_collection.create_single_rows();
+
+    let mut complete_flag = CheckBlockCompleteFlag::Failure;
 
     let user_input = Rc::new(Cell::new(false));
     {
@@ -126,46 +139,54 @@ pub fn start() {
             let is_left = MoveFlag::left(&field_collection, &current_block_positions);
             if event.key_code() == store::statics::Number::LEFT_KEY as u32 && is_left {
 
-                RenderBlock::clear_playing_block(&field, &field_collection, &context);
+                Render2d::clear_playing_block(&field, &field_collection, &context);
                 field_collection.clear_current_block(&current_block_positions);
                 current_block_positions = block.get_moved_current_block_positions("left").unwrap();
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
-                RenderBlock::render_block(&field, &field_collection, &block, &context);
+                Render2d::render_block(&field, &field_collection, &block, &context);
             }
 
             let is_right = MoveFlag::right(&field_collection, &current_block_positions);
             if event.key_code() == store::statics::Number::RIGHT_KEY as u32 && is_right {
 
-                RenderBlock::clear_playing_block(&field, &field_collection, &context);
+                Render2d::clear_playing_block(&field, &field_collection, &context);
                 field_collection.clear_current_block(&current_block_positions);
                 current_block_positions = block.get_moved_current_block_positions("right").unwrap();
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
-                RenderBlock::render_block(&field, &field_collection, &block, &context);
+                Render2d::render_block(&field, &field_collection, &block, &context);
             }
 
             let is_down = MoveFlag::down(&field_collection, &current_block_positions);
             if event.key_code() == store::statics::Number::DOWN_KEY as u32 && is_down {
 
-                RenderBlock::clear_playing_block(&field, &field_collection, &context);
+                Render2d::clear_playing_block(&field, &field_collection, &context);
                 field_collection.clear_current_block(&current_block_positions);
                 current_block_positions = block.get_moved_current_block_positions("down").unwrap();
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
-                RenderBlock::render_block(&field, &field_collection, &block, &context);
+                Render2d::render_block(&field, &field_collection, &block, &context);
             }
 
             let is_rotate = MoveFlag::rotate(&field_collection, &block.crate_rotate_block("simulate", true));
             if event.key_code() == store::statics::Number::UP_KEY as u32 && is_rotate {
 
-                RenderBlock::clear_playing_block(&field, &field_collection, &context);
+                Render2d::clear_playing_block(&field, &field_collection, &context);
                 field_collection.clear_current_block(&current_block_positions);
                 current_block_positions = block.crate_rotate_block("fixed", true);
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
-                RenderBlock::render_block(&field, &field_collection, &block, &context);
+                Render2d::render_block(&field, &field_collection, &block, &context);
             }
+
+            field_collection.create_single_rows();
+
+            let single_rows = field_collection.get_single_rows();
+
+            complete_flag = complete_flag.check_complete(single_rows);
+
+            console_log!("{:?}", complete_flag);
 
         }) as Box<dyn FnMut(_)>);
         document.add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref());

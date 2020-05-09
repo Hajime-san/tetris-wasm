@@ -3,14 +3,6 @@ use crate::store;
 
 use store::dynamics::field::Field as GameFieldContext;
 
-use wasm_bindgen::prelude::*;
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(a: &str);
-}
-
 pub fn left(field_collection: &GameFieldContext, current_block: &store::statics::BlockPosition) -> bool {
     let mut flag = true;
 

@@ -3,18 +3,6 @@ use arraytools::ArrayTools;
 use crate::func;
 use crate::store;
 
-use wasm_bindgen::prelude::*;
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(a: &str);
-}
-
-macro_rules! console_log {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-}
-
 #[derive(Debug)]
 pub struct Block {
     positions: store::statics::BlockPosition,
@@ -265,30 +253,4 @@ impl Block {
     pub fn update_current_positions(&mut self, moved_current_positions: &store::statics::BlockPosition) {
         self.positions = *moved_current_positions;
     }
-
-    // when failure to rotate
-    pub fn reverse_angle(&mut self) {
-        match self.angle {
-            store::statics::Angle::Initial => self.angle = store::statics::Angle::Left,
-            store::statics::Angle::Right => self.angle = store::statics::Angle::Initial,
-            store::statics::Angle::Down => self.angle = store::statics::Angle::Right,
-            store::statics::Angle::Left => self.angle = store::statics::Angle::Down,
-        }
-    }
 }
-
-// #[cfg(test)]
-// mod tests {
-//     use super::Block;
-//     use super::Update;
-//     use super::Get;
-
-//     #[test]
-//     fn some_test() {
-//         let def: Block = Default::default();
-
-//         let rotate = def.get_current_block_number();
-
-//         println!("{:?}", rotate);
-//     }
-// }
