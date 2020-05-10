@@ -30,14 +30,25 @@ pub fn clear_playing_block(field: &RenderFieldContext, field_collection: &GameFi
 
     for (i, v) in field_collection.get_list().iter().enumerate() {
 
-        // draw controllable block
+        // clear controllable block
         if v == &store::statics::Number::CURRENT {
             context.clear_rect(field.get_rect_x(&i), field.get_rect_y(&i), field.get_rect_w(), field.get_rect_h());
         }
     }
 }
 
-pub fn delete_completed_block(field: &RenderFieldContext, field_collection: &GameFieldContext, context: &web_sys::CanvasRenderingContext2d) {
+pub fn clear_all_block(field: &RenderFieldContext, field_collection: &GameFieldContext, context: &web_sys::CanvasRenderingContext2d) {
+
+    for (i, v) in field_collection.get_list().iter().enumerate() {
+
+        // draw controllable block
+        if v != &store::statics::Number::EMPTY {
+            context.clear_rect(field.get_rect_x(&i), field.get_rect_y(&i), field.get_rect_w(), field.get_rect_h());
+        }
+    }
+}
+
+pub fn clear_completed_block(field: &RenderFieldContext, field_collection: &GameFieldContext, context: &web_sys::CanvasRenderingContext2d) {
     for v in field_collection.get_complete_row_numbers().iter() {
 
         for iter in 0..store::statics::Number::ROW {

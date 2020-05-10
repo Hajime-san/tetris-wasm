@@ -186,7 +186,16 @@ pub fn start() {
 
             complete_flag = complete_flag.check_complete(single_rows);
 
-            console_log!("{:?}", complete_flag);
+            match complete_flag {
+                CheckBlockCompleteFlag::Failure => console_log!("{:?}", "failed"),
+                CheckBlockCompleteFlag::Success => {
+                    field_collection.delete_row();
+                    Render2d::clear_completed_block(&field, &field_collection, &context);
+                    Render2d::clear_all_block(&field, &field_collection, &context);
+                    field_collection.drop_row();
+                    Render2d::render_block(&field, &field_collection, &block, &context);
+                }
+            }
 
         }) as Box<dyn FnMut(_)>);
         document.add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref());

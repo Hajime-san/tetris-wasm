@@ -2,6 +2,17 @@ use crate::store;
 
 pub const FIELD_LENGTH: i32 = store::statics::Number::ROW * store::statics::Number::COLUMN;
 
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(a: &str);
+}
+
+macro_rules! console_log {
+    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+}
 
 #[derive(Debug)]
 pub struct Field {
@@ -65,6 +76,7 @@ impl Field {
         }
     }
 
+    // create each row array to check completion for a row
     pub fn create_single_rows(&mut self) {
         // initialize
         self.single_rows = vec![];
@@ -99,8 +111,9 @@ impl Field {
                 self.remain_row_numbers.push(i as i32);
             }
 
+            // onbly completed rows can through below code
             if !check_rows {
-                return;
+                continue;
             }
 
             self.complete_row_numbers.push(i as i32);
@@ -117,8 +130,8 @@ impl Field {
     }
 
     pub fn drop_row(&mut self) {
-        // first, drop remainRow
 
+        // first, drop remainRow
         if self.remain_row_numbers.len() > 0 {
             let mut reverse_num: Vec<i32> = self.remain_row_numbers.iter().rev().cloned().collect();
             let reverse_rows: Vec<Vec<i32>> = self.remain_rows.iter().rev().cloned().collect();
