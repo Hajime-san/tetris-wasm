@@ -1,7 +1,21 @@
 use rand::seq::SliceRandom;
 use rand::{thread_rng, Rng};
+use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
+use js_sys::Math;
 
 use crate::store;
+
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(a: &str);
+}
+
+macro_rules! console_log {
+    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+}
 
 #[derive(Debug)]
 pub struct QueueField {
@@ -13,13 +27,13 @@ impl Default for QueueField {
     fn default() -> Self {
         Self {
             list: default_queue_field_value(),
-            line: default_queue_value(),
+            line: create_initial_queue(),
         }
     }
 }
 
 impl QueueField {
-    pub fn create_queue(&mut self, count: i32) {
+    pub fn update_queue(&mut self, count: i32) {
         // delete first block
         if count >= 1 {
             self.line.drain(0..1);
@@ -27,8 +41,7 @@ impl QueueField {
         // pick random between especially vector length
         if self.line.len() > 0 && self.line.len() < 4 {
             fn random() -> i32 {
-                let mut rng = thread_rng();
-                let r: i32 = rng.gen_range(0, &store::statics::BLOCKS.len()) as i32;
+                let r = Math::floor(Math::random() * store::statics::BLOCKS.len() as f64) as i32;
                 r
             }
 
@@ -41,6 +54,27 @@ impl QueueField {
                 }
             }
         }
+    }
+
+    pub fn get_block_name(&self) -> Result<store::statics::BlockName, ()> {
+        match self.line[0] {
+            0 => Ok(store::statics::BlockName::O_mino),
+            1 => Ok(store::statics::BlockName::I_mino),
+            2 => Ok(store::statics::BlockName::J_mino),
+            3 => Ok(store::statics::BlockName::L_mino),
+            4 => Ok(store::statics::BlockName::T_mino),
+            5 => Ok(store::statics::BlockName::S_mino),
+            6 => Ok(store::statics::BlockName::Z_mino),
+            _ => Err(eprint!("wrong parameter '{}' is assinged!! ", &self.line[0]))
+        }
+    }
+
+    pub fn get_line(&self) -> &Vec<i32> {
+        &self.line
+    }
+
+    pub fn get_next_block(&self) -> i32 {
+        self.line[1]
     }
 }
 
@@ -57,10 +91,28 @@ fn default_queue_field_value() -> Vec<i32> {
     q
 }
 
-pub fn default_queue_value() -> Vec<i32> {
-    let mut queue: Vec<i32> = (0..store::statics::BLOCKS.len() as i32).collect();
-    let mut rng = thread_rng();
-    queue.shuffle(&mut rng);
+
+fn create_initial_queue() -> Vec<i32> {
+
+    let mut queue = vec![];
+
+    fn random() -> i32 {
+        let r = Math::floor(Math::random() * store::statics::BLOCKS.len() as f64) as i32;
+        r
+    }
+
+    loop {
+
+        if queue.len() == store::statics::BLOCKS.len() {
+            break;
+        }
+
+        let serve = random();
+
+        if !queue.contains(&serve) {
+            queue.push(serve);
+        }
+    }
 
     queue
 }

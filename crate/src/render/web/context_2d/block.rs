@@ -12,7 +12,7 @@ pub fn render_block(field: &RenderFieldContext, field_collection: &GameFieldCont
 
         // draw controllable block
         if v == &store::statics::Number::CURRENT {
-            context.set_fill_style(&JsValue::from(store::statics::BLOCKS[block_type.get_current_block_type() as usize].color));
+            context.set_fill_style(&JsValue::from(store::statics::BLOCKS[block_type.get_current_block_name() as usize].color));
             context.fill_rect(field.get_rect_x(&i), field.get_rect_y(&i), field.get_rect_w(), field.get_rect_h());
             context.fill();
         }
@@ -37,7 +37,7 @@ pub fn clear_playing_block(field: &RenderFieldContext, field_collection: &GameFi
     }
 }
 
-pub fn clear_all_block(field: &RenderFieldContext, field_collection: &GameFieldContext, context: &web_sys::CanvasRenderingContext2d) {
+pub fn clear_existing_block(field: &RenderFieldContext, field_collection: &GameFieldContext, context: &web_sys::CanvasRenderingContext2d) {
 
     for (i, v) in field_collection.get_list().iter().enumerate() {
 

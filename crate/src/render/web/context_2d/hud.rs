@@ -11,6 +11,7 @@ use crate::render;
 use store::dynamics::render::field::Field as RenderFieldContext;
 use store::dynamics::field::Field as GameFieldContext;
 use store::dynamics::block::Block as BlockContext;
+use store::dynamics::queue_field as Queue;
 use render::web::context_2d::block as Render2d;
 use state::movable as MoveFlag;
 use state::complete::Complete as CheckBlockCompleteFlag;
@@ -106,13 +107,22 @@ pub fn start() {
 
     let mut field_collection: GameFieldContext = Default::default();
 
-    let mut block: BlockContext = Default::default();
+    let queue: Queue::QueueField = Default::default();
+
+    let mut block: BlockContext = BlockContext::new(
+                                    store::statics::BLOCKS[queue.get_block_name().unwrap() as usize].number,
+                                    store::statics::Angle::Initial,
+                                    store::statics::Angle::Initial,
+                                    queue.get_block_name().unwrap()
+                                );
+
+    // let mut block: BlockContext = Default::default();
 
     let mut current_block_positions = block.get_current_block_positions();
 
     field_collection.transfer_current_block(&current_block_positions);
 
-    field_collection.list[24] = 2;
+    // field_collection.list[24] = 2;
     field_collection.list[68] = 0;
     field_collection.list[150] = 0;
     field_collection.list[151] = 0;
@@ -136,7 +146,7 @@ pub fn start() {
 
         let closure = Closure::wrap(Box::new(move |event: web_sys::KeyboardEvent| {
 
-            let is_left = MoveFlag::left(&field_collection, &current_block_positions);
+            let mut is_left = MoveFlag::left(&field_collection, &current_block_positions);
             if event.key_code() == store::statics::Number::LEFT_KEY as u32 && is_left {
 
                 Render2d::clear_playing_block(&field, &field_collection, &context);
@@ -145,9 +155,10 @@ pub fn start() {
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
                 Render2d::render_block(&field, &field_collection, &block, &context);
+                is_left = MoveFlag::left(&field_collection, &current_block_positions);
             }
 
-            let is_right = MoveFlag::right(&field_collection, &current_block_positions);
+            let mut is_right = MoveFlag::right(&field_collection, &current_block_positions);
             if event.key_code() == store::statics::Number::RIGHT_KEY as u32 && is_right {
 
                 Render2d::clear_playing_block(&field, &field_collection, &context);
@@ -156,9 +167,10 @@ pub fn start() {
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
                 Render2d::render_block(&field, &field_collection, &block, &context);
+                is_right = MoveFlag::right(&field_collection, &current_block_positions);
             }
 
-            let is_down = MoveFlag::down(&field_collection, &current_block_positions);
+            let mut is_down = MoveFlag::down(&field_collection, &current_block_positions);
             if event.key_code() == store::statics::Number::DOWN_KEY as u32 && is_down {
 
                 Render2d::clear_playing_block(&field, &field_collection, &context);
@@ -167,6 +179,7 @@ pub fn start() {
                 block.update_current_positions(&current_block_positions);
                 field_collection.transfer_current_block(&current_block_positions);
                 Render2d::render_block(&field, &field_collection, &block, &context);
+                is_down = MoveFlag::down(&field_collection, &current_block_positions);
             }
 
             let is_rotate = MoveFlag::rotate(&field_collection, &block.crate_rotate_block("simulate", true));
@@ -186,14 +199,22 @@ pub fn start() {
 
             complete_flag = complete_flag.check_complete(single_rows);
 
-            match complete_flag {
-                CheckBlockCompleteFlag::Failure => console_log!("{:?}", "failed"),
-                CheckBlockCompleteFlag::Success => {
-                    field_collection.delete_row();
-                    Render2d::clear_completed_block(&field, &field_collection, &context);
-                    Render2d::clear_all_block(&field, &field_collection, &context);
-                    field_collection.drop_row();
-                    Render2d::render_block(&field, &field_collection, &block, &context);
+            if !is_down {
+                match complete_flag {
+                    CheckBlockCompleteFlag::Failure => {
+                        block.update_current_positions(&current_block_positions);
+                        field_collection.transfer_to_fixed_number(&block.get_current_block_name());
+
+                        console_log!("{:?}", &field_collection.get_list());
+
+                    },
+                    CheckBlockCompleteFlag::Success => {
+                        field_collection.delete_row();
+                        Render2d::clear_completed_block(&field, &field_collection, &context);
+                        Render2d::clear_existing_block(&field, &field_collection, &context);
+                        field_collection.drop_row();
+                        Render2d::render_block(&field, &field_collection, &block, &context);
+                    }
                 }
             }
 

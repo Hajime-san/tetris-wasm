@@ -54,12 +54,12 @@ impl Field {
     // update field value methods
     //
 
-    pub fn transfer_to_fixed_number(&mut self, block_type: &i32) {
+    pub fn transfer_to_fixed_number(&mut self, block_type: &store::statics::BlockName) {
         let iter_field = self.list.clone();
 
         for (i, v) in iter_field.iter().enumerate() {
             if *v == store::statics::Number::CURRENT {
-                self.list[i as usize] = *block_type;
+                self.list[i as usize] = *block_type as i32;
             }
         }
     }
