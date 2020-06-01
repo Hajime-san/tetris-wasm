@@ -1,5 +1,5 @@
 pub mod func;
-pub mod render;
+pub mod renderer;
 pub mod state;
 pub mod store;
 pub mod web;

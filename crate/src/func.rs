@@ -76,28 +76,3 @@ pub fn translate_rect_to_num(mat2: [i32; 2]) -> i32 {
 
     point
 }
-
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-
-//     use crate::store::dynamics::render::element::Get;
-//     use crate::store::dynamics::render::element::Update;
-
-//     #[test]
-//     fn test() {
-//         let num = translate_number_to_rect(5, 15);
-//         let rect = rotate_matrix(num);
-//         let update = translate_rect_to_num(rect);
-
-//         println!("{:?} is num", num);
-//         println!("{:?} is rect", rect);
-//         println!("{} is rotated position", update);
-
-//         let mut canvas: Canvas = Default::default();
-//         canvas.set_width(400);
-//         canvas.set_height(600);
-
-//         println!("{:?}", canvas.get_width());
-//     }
-// }

@@ -6,13 +6,13 @@ use wasm_bindgen::JsCast;
 
 use crate::store;
 use crate::state;
-use crate::render;
+use crate::renderer;
 
 use store::dynamics::render::field::Field as RenderFieldContext;
 use store::dynamics::field::Field as GameFieldContext;
 use store::dynamics::block::Block as BlockContext;
 use store::dynamics::queue_field as Queue;
-use render::web::context_2d::block as Render2d;
+use renderer::web::context_2d::block as Render2d;
 use state::movable as MoveFlag;
 use state::complete::Complete as CheckBlockCompleteFlag;
 
