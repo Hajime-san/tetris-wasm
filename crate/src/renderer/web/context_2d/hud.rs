@@ -110,13 +110,9 @@ pub fn start() {
     let queue: Queue::QueueField = Default::default();
 
     let mut block: BlockContext = BlockContext::new(
-                                    store::statics::BLOCKS[queue.get_block_name().unwrap() as usize].number,
-                                    store::statics::Angle::Initial,
-                                    store::statics::Angle::Initial,
-                                    queue.get_block_name().unwrap()
+                                    store::statics::BLOCKS[queue.get_block_name() as usize].number,
+                                    queue.get_block_name()
                                 );
-
-    // let mut block: BlockContext = Default::default();
 
     let mut current_block_positions = block.get_current_block_positions();
 
@@ -204,9 +200,6 @@ pub fn start() {
                     CheckBlockCompleteFlag::Failure => {
                         block.update_current_positions(&current_block_positions);
                         field_collection.transfer_to_fixed_number(&block.get_current_block_name());
-
-                        console_log!("{:?}", &field_collection.get_list());
-
                     },
                     CheckBlockCompleteFlag::Success => {
                         field_collection.delete_row();

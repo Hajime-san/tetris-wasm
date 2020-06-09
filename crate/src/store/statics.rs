@@ -40,6 +40,7 @@ impl Text {
 pub struct Prop {
     pub number: BlockPosition,
     pub color: &'static str,
+    pub name: BlockName
 }
 
 pub type BlockPosition = [i32; 4];
@@ -59,30 +60,37 @@ pub const BLOCKS: [Prop; 7] = [
     Prop {
         number: O_NUMBER,
         color: O_COLOR,
+        name: BlockName::O_mino
     },
     Prop {
         number: I_NUMBER,
         color: I_COLOR,
+        name: BlockName::I_mino
     },
     Prop {
         number: J_NUMBER,
         color: J_COLOR,
+        name: BlockName::J_mino
     },
     Prop {
         number: L_NUMBER,
         color: L_COLOR,
+        name: BlockName::L_mino
     },
     Prop {
         number: T_NUMBER,
         color: T_COLOR,
+        name: BlockName::T_mino
     },
     Prop {
         number: S_NUMBER,
         color: S_COLOR,
+        name: BlockName::S_mino
     },
     Prop {
         number: Z_NUMBER,
         color: Z_COLOR,
+        name: BlockName::Z_mino
     },
 ];
 

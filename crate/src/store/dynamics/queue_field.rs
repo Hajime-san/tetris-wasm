@@ -56,16 +56,9 @@ impl QueueField {
         }
     }
 
-    pub fn get_block_name(&self) -> Result<store::statics::BlockName, ()> {
+    pub fn get_block_name(&self) -> store::statics::BlockName {
         match self.line[0] {
-            0 => Ok(store::statics::BlockName::O_mino),
-            1 => Ok(store::statics::BlockName::I_mino),
-            2 => Ok(store::statics::BlockName::J_mino),
-            3 => Ok(store::statics::BlockName::L_mino),
-            4 => Ok(store::statics::BlockName::T_mino),
-            5 => Ok(store::statics::BlockName::S_mino),
-            6 => Ok(store::statics::BlockName::Z_mino),
-            _ => Err(eprint!("wrong parameter '{}' is assinged!! ", &self.line[0]))
+            _ => store::statics::BLOCKS[self.line[0] as usize].name
         }
     }
 

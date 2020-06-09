@@ -30,13 +30,11 @@ impl Block {
     */
 
     pub fn new( positions: store::statics::BlockPosition,
-                angle: store::statics::Angle,
-                next_angle: store::statics::Angle,
                 block_name: store::statics::BlockName) -> Self {
         Self {
             positions: positions,
-            angle: angle,
-            next_angle: next_angle,
+            angle: store::statics::Angle::Initial,
+            next_angle: store::statics::Angle::Initial,
             block_name: block_name,
         }
     }
