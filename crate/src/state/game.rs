@@ -9,6 +9,7 @@ pub enum GameState {
 }
 
 impl GameState {
+    /// check game is over
     pub fn check_playable(
         field: &Vec<i32>,
         current_block: &store::statics::BlockPosition,

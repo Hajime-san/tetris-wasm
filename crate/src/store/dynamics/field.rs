@@ -76,7 +76,7 @@ impl FieldContext {
         }
     }
 
-    // create each row array to check completion for a row
+    /// create each row array to check completion for a row
     pub fn create_single_rows(&mut self) {
         // initialize
         self.single_rows = vec![];
@@ -91,6 +91,13 @@ impl FieldContext {
             end += store::statics::Number::ROW;
             self.single_rows.push(row);
         }
+    }
+
+    /// initialize field value ready for delete row method
+    pub fn initialize_field_values(&mut self) {
+        self.complete_row_numbers = vec![];
+        self.remain_rows = vec![];
+        self.remain_row_numbers = vec![];
     }
 
     pub fn delete_row(&mut self) {

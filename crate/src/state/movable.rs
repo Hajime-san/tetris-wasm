@@ -1,8 +1,9 @@
-use crate::func;
+use crate::util;
 use crate::store;
 
 use store::dynamics::field::FieldContext;
 
+/// check movable flag for left side
 pub fn left(field_collection: &FieldContext, current_block: &store::statics::BlockPosition) -> bool {
     let mut flag = true;
 
@@ -24,8 +25,8 @@ pub fn left(field_collection: &FieldContext, current_block: &store::statics::Blo
 
     // check side wall
     for v in current_block {
-        if func::fix_digit(*v)
-            == func::fix_digit(store::statics::Number::ROW)
+        if util::fix_digit(*v)
+            == util::fix_digit(store::statics::Number::ROW)
         {
             flag = false;
         }
@@ -34,6 +35,7 @@ pub fn left(field_collection: &FieldContext, current_block: &store::statics::Blo
     flag
 }
 
+/// check movable flag for right side
 pub fn right(field_collection: &FieldContext, current_block: &store::statics::BlockPosition) -> bool {
     let mut flag = true;
 
@@ -55,8 +57,8 @@ pub fn right(field_collection: &FieldContext, current_block: &store::statics::Bl
 
     // check side wall
     for v in current_block {
-        if func::fix_digit(*v)
-            == func::fix_digit(store::statics::Number::ROW + store::statics::Number::LEFT_MOVE)
+        if util::fix_digit(*v)
+            == util::fix_digit(store::statics::Number::ROW + store::statics::Number::LEFT_MOVE)
         {
             flag = false;
         }
@@ -65,6 +67,7 @@ pub fn right(field_collection: &FieldContext, current_block: &store::statics::Bl
     flag
 }
 
+/// check movable flag for down side
 pub fn down(field_collection: &FieldContext, current_block: &store::statics::BlockPosition) -> bool {
     let mut flag = true;
 
@@ -100,6 +103,7 @@ pub fn down(field_collection: &FieldContext, current_block: &store::statics::Blo
     flag
 }
 
+/// check movable flag for rotation
 pub fn rotate(field_collection: &FieldContext, tmp_block: &store::statics::BlockPosition) -> bool {
     let mut left_wall = true;
     let mut right_wall = true;
@@ -116,11 +120,11 @@ pub fn rotate(field_collection: &FieldContext, tmp_block: &store::statics::Block
         if is_last_row {
             down_wall = false;
         }
-        if func::fix_digit(*v) == func::fix_digit(store::statics::Number::ROW) {
+        if util::fix_digit(*v) == util::fix_digit(store::statics::Number::ROW) {
             left_wall = false;
         }
-        if func::fix_digit(*v)
-            == func::fix_digit(store::statics::Number::ROW + store::statics::Number::LEFT_MOVE)
+        if util::fix_digit(*v)
+            == util::fix_digit(store::statics::Number::ROW + store::statics::Number::LEFT_MOVE)
         {
             right_wall = false;
         }

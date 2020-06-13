@@ -70,6 +70,7 @@ pub fn init(layout_context: &mut LayoutContext, canvas_element: &web_sys::HtmlCa
     canvas_context.stroke_with_path(&grid);
 }
 
+/// render block according to field context
 pub fn render_block(layout_context: &LayoutContext, field_context: &FieldContext, block_context: &BlockContext, canvas_context: &web_sys::CanvasRenderingContext2d) {
     for (i, v) in field_context.get_list().iter().enumerate() {
 

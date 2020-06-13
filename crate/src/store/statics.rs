@@ -27,6 +27,14 @@ pub enum Angle {
     Left = (Number::DEGREES * 3) as isize,
 }
 
+
+#[derive(Debug, PartialEq)]
+pub enum Direction {
+    Left,
+    Right,
+    Down
+}
+
 pub struct Text {}
 impl Text {
     pub const EMPTY: &'static str = "empty";

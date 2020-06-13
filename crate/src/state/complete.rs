@@ -7,6 +7,7 @@ pub enum Complete {
 }
 
 impl Complete {
+    /// check completion at least one row
     pub fn check_complete(&self, single_rows: &Vec<Vec<i32>>) -> Complete {
         let mut flag = Self::Failure;
 

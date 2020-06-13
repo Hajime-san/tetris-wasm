@@ -1,21 +1,6 @@
-use rand::seq::SliceRandom;
-use rand::{thread_rng, Rng};
-use wasm_bindgen::prelude::*;
-use wasm_bindgen::JsCast;
 use js_sys::Math;
 
 use crate::store;
-
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(a: &str);
-}
-
-macro_rules! console_log {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-}
 
 #[derive(Debug)]
 pub struct QueueContext {
@@ -33,11 +18,12 @@ impl Default for QueueContext {
 }
 
 impl QueueContext {
-    pub fn update_queue(&mut self, count: i32) {
+    pub fn update_queue(&mut self, count: &i32) {
         // delete first block
-        if count >= 1 {
+        if count >= &1 {
             self.line.drain(0..1);
         }
+
         // pick random between especially vector length
         if self.line.len() > 0 && self.line.len() < 4 {
             fn random() -> i32 {

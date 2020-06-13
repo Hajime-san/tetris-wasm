@@ -1,9 +1,11 @@
 use arraytools::ArrayTools;
 
-use crate::func;
+use crate::util;
 use crate::store;
+use std::f64::consts::PI;
 
 #[derive(Debug)]
+/// store data for playing block
 pub struct BlockContext {
     positions: store::statics::BlockPosition,
     angle: store::statics::Angle,
@@ -40,19 +42,20 @@ impl BlockContext {
         self.block_name
     }
 
-    pub fn get_moved_current_block_positions(&mut self, dir: &str) -> Result<store::statics::BlockPosition, ()> {
+    /// return after moved block positions
+    pub fn get_moved_current_block_positions(&mut self, dir: store::statics::Direction) -> store::statics::BlockPosition {
         match dir {
-            "left" => Ok(self
+            store::statics::Direction::Left => self
                 .positions
-                .map(|x| x + store::statics::Number::LEFT_MOVE)),
-            "right" => Ok(self
+                .map(|x| x + store::statics::Number::LEFT_MOVE),
+            store::statics::Direction::Right => self
                 .positions
-                .map(|x| x + store::statics::Number::RIGHT_MOVE)),
-            "down" => Ok(self.positions.map(|x| x + store::statics::Number::ROW)),
-            dir => Err(eprint!("wrong parameter '{}' is assinged!! ", dir)),
+                .map(|x| x + store::statics::Number::RIGHT_MOVE),
+            store::statics::Direction::Down => self.positions.map(|x| x + store::statics::Number::ROW),
         }
     }
 
+    /// create rotate block by next angle or current angle
     pub fn crate_rotate_block(&mut self, option: &str, fix: bool) -> store::statics::BlockPosition {
 
         // update angle
@@ -241,9 +244,9 @@ impl BlockContext {
         let mut rotate_blocks = [0; 4];
 
         for (i, v) in self.positions.iter().enumerate() {
-            let num = func::translate_number_to_rect(*v, self.positions[center as usize]);
-            let rect = func::rotate_matrix(num);
-            let translated_num = func::translate_rect_to_num(rect);
+            let num = translate_number_to_rect(*v, self.positions[center as usize]);
+            let rect = rotate_matrix(num);
+            let translated_num = translate_rect_to_num(rect);
             let fixed_num = translated_num + self.positions[center as usize] + fix_position;
             rotate_blocks[i as usize] = fixed_num;
         }
@@ -260,4 +263,70 @@ impl BlockContext {
     pub fn update_current_positions(&mut self, moved_current_positions: &store::statics::BlockPosition) {
         self.positions = *moved_current_positions;
     }
+}
+
+
+/// translate block position value to 2d rect
+fn translate_number_to_rect(num: i32, center: i32) -> [i32; 2] {
+    let mut rect = [0, 0];
+
+    if num <= center && (center - num) <= 2 {
+        rect = [util::fix_digit(num) - util::fix_digit(center), 0];
+    } else if num >= center && (num - center) <= 2 {
+        rect = [util::fix_digit(num) - util::fix_digit(center), 0];
+    } else if num <= center && (center - num) >= 3 && (center - num) <= 13 {
+        rect = [util::fix_digit(num) - util::fix_digit(center), 1];
+    } else if num >= center && (num - center) >= 3 && (num - center) <= 13 {
+        rect = [util::fix_digit(num) - util::fix_digit(center), -1];
+    } else if num <= center && (center - num) >= 3 && (center - num) >= 13 {
+        rect = [util::fix_digit(num) - util::fix_digit(center), 2];
+    } else if num >= center && (num - center) >= 3 && (num - center) >= 13 {
+        rect = [util::fix_digit(num) - util::fix_digit(center), -2];
+    }
+
+    rect
+}
+
+/// rotate 2d rect by angle
+fn rotate_matrix(rect: [i32; 2]) -> [i32; 2] {
+    const RADIANS: f64 = (PI / 180.0) * store::statics::Number::DEGREES as f64;
+    let cos = RADIANS.cos() as i32;
+    let sin = RADIANS.sin() as i32;
+    let nx = (cos * (rect[0] - 0)) + (sin * (rect[1] - 0));
+    let ny = (cos * (rect[1] - 0)) - (sin * (rect[0] - 0));
+
+    [nx, ny]
+}
+
+// restore new block positions from 2d rect
+fn translate_rect_to_num(mat2: [i32; 2]) -> i32 {
+    let point: i32;
+
+    if mat2[0] == 0 && mat2[1] > 0 {
+        point = -(mat2[1] * store::statics::Number::ROW);
+    } else if mat2[0] == 0 && mat2[1] < 0 {
+        point = -(mat2[1] * store::statics::Number::ROW);
+    } else if mat2[0] == 0 && mat2[1] > 0 {
+        point = mat2[1] * store::statics::Number::ROW;
+    } else if mat2[0] > 0 && mat2[1] == 0 {
+        point = mat2[0];
+    } else if mat2[0] < 0 && mat2[1] == 0 {
+        point = mat2[0];
+    } else if mat2[0] > 0 && mat2[1] > 0 {
+        point = -(mat2[1] * store::statics::Number::ROW) + mat2[0];
+    } else if mat2[0] > 0 && mat2[1] < 0 {
+        point = -(mat2[1] * store::statics::Number::ROW) + mat2[0];
+    } else if mat2[0] < 0 && mat2[1] > 0 {
+        point = -(mat2[1] * store::statics::Number::ROW) + mat2[0];
+    } else if mat2[0] < 0 && mat2[1] < 0 {
+        point = -(mat2[1] * store::statics::Number::ROW) + mat2[0];
+    } else if mat2[0] == 0 && mat2[1] == 0 {
+        point = 0;
+
+    //  undefined case
+    } else {
+        point = 0;
+    }
+
+    point
 }

@@ -12,6 +12,7 @@ use store::dynamics::render::layout::LayoutContext;
 use store::dynamics::field::FieldContext;
 use store::dynamics::block::BlockContext;
 use store::dynamics::queue::QueueContext;
+use store::dynamics::level::LevelContext;
 use renderer::web::context_2d::renderer as Render2d;
 use state::movable as MoveFlag;
 use state::complete::Complete as CheckBlockCompleteFlag;
@@ -47,30 +48,30 @@ pub fn start() {
 
     let init_layout = Render2d::init(&mut layout_context, &canvas, &canvas_context);
 
-
     let mut field_context: FieldContext = Default::default();
 
-    let queue: QueueContext = Default::default();
+    let mut queue_context: QueueContext = Default::default();
 
     let mut block_context: BlockContext = BlockContext::new(
-                                    store::statics::BLOCKS[queue.get_block_name() as usize].number,
-                                    queue.get_block_name()
+                                    store::statics::BLOCKS[queue_context.get_block_name() as usize].number,
+                                    queue_context.get_block_name()
                                 );
+
+
+    let mut level_context: LevelContext = Default::default();
 
     let mut current_block_positions = block_context.get_current_block_positions();
 
     field_context.transfer_current_block(&current_block_positions);
 
-    // field_context.list[24] = 2;
-    field_context.list[68] = 0;
-    field_context.list[150] = 0;
-    field_context.list[151] = 0;
-    field_context.list[152] = 0;
-    field_context.list[155] = 0;
-    field_context.list[156] = 0;
-    field_context.list[157] = 0;
-    field_context.list[158] = 0;
-    field_context.list[159] = 0;
+    // field_context.list[150] = 0;
+    // field_context.list[151] = 0;
+    // field_context.list[152] = 0;
+    // field_context.list[155] = 0;
+    // field_context.list[156] = 0;
+    // field_context.list[157] = 0;
+    // field_context.list[158] = 0;
+    // field_context.list[159] = 0;
 
     Render2d::render_block(&layout_context, &field_context, &block_context, &canvas_context);
 
@@ -90,7 +91,7 @@ pub fn start() {
 
                 Render2d::clear_playing_block(&layout_context, &field_context, &canvas_context);
                 field_context.clear_current_block(&current_block_positions);
-                current_block_positions = block_context.get_moved_current_block_positions("left").unwrap();
+                current_block_positions = block_context.get_moved_current_block_positions(store::statics::Direction::Left);
                 block_context.update_current_positions(&current_block_positions);
                 field_context.transfer_current_block(&current_block_positions);
                 Render2d::render_block(&layout_context, &field_context, &block_context, &canvas_context);
@@ -102,7 +103,7 @@ pub fn start() {
 
                 Render2d::clear_playing_block(&layout_context, &field_context, &canvas_context);
                 field_context.clear_current_block(&current_block_positions);
-                current_block_positions = block_context.get_moved_current_block_positions("right").unwrap();
+                current_block_positions = block_context.get_moved_current_block_positions(store::statics::Direction::Right);
                 block_context.update_current_positions(&current_block_positions);
                 field_context.transfer_current_block(&current_block_positions);
                 Render2d::render_block(&layout_context, &field_context, &block_context, &canvas_context);
@@ -114,7 +115,7 @@ pub fn start() {
 
                 Render2d::clear_playing_block(&layout_context, &field_context, &canvas_context);
                 field_context.clear_current_block(&current_block_positions);
-                current_block_positions = block_context.get_moved_current_block_positions("down").unwrap();
+                current_block_positions = block_context.get_moved_current_block_positions(store::statics::Direction::Down);
                 block_context.update_current_positions(&current_block_positions);
                 field_context.transfer_current_block(&current_block_positions);
                 Render2d::render_block(&layout_context, &field_context, &block_context, &canvas_context);
@@ -139,17 +140,53 @@ pub fn start() {
             complete_flag = complete_flag.check_complete(single_rows);
 
             if !is_down {
+                // update level information
+                level_context.update_count();
+
                 match complete_flag {
                     CheckBlockCompleteFlag::Failure => {
                         block_context.update_current_positions(&current_block_positions);
                         field_context.transfer_to_fixed_number(&block_context.get_current_block_name());
+
+                        // update game level
+                        queue_context.update_queue(level_context.get_count());
+                        level_context.update_score(field_context.get_complete_row_numbers());
+
+                        // update game
+                        block_context = BlockContext::new(
+                            store::statics::BLOCKS[queue_context.get_block_name() as usize].number,
+                            queue_context.get_block_name()
+                        );
+                        current_block_positions = block_context.get_current_block_positions();
+                        field_context.transfer_current_block(&current_block_positions);
+                        Render2d::render_block(&layout_context, &field_context, &block_context, &canvas_context);
                     },
                     CheckBlockCompleteFlag::Success => {
                         field_context.delete_row();
                         Render2d::clear_completed_block(&layout_context, &field_context, &canvas_context);
                         Render2d::clear_existing_block(&layout_context, &field_context, &canvas_context);
                         field_context.drop_row();
+                        field_context.transfer_to_fixed_number(&block_context.get_current_block_name());
                         Render2d::render_block(&layout_context, &field_context, &block_context, &canvas_context);
+
+                        // update game level
+                        queue_context.update_queue(level_context.get_count());
+                        level_context.update_completed_row(field_context.get_complete_row_numbers());
+                        level_context.update_level();
+                        level_context.update_speed();
+                        level_context.update_score(field_context.get_complete_row_numbers());
+
+
+                        // update game
+                        field_context.initialize_field_values();
+                        block_context = BlockContext::new(
+                            store::statics::BLOCKS[queue_context.get_block_name() as usize].number,
+                            queue_context.get_block_name()
+                        );
+                        current_block_positions = block_context.get_current_block_positions();
+                        field_context.transfer_current_block(&current_block_positions);
+                        Render2d::render_block(&layout_context, &field_context, &block_context, &canvas_context);
+
                     }
                 }
             }

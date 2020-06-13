@@ -1,9 +1,10 @@
 use math::round;
 
-use crate::func;
+use crate::util;
 use crate::store;
 
 #[derive(Debug)]
+/// store data for render layout
 pub struct LayoutContext {
     width: u32,
     height: u32,
@@ -16,6 +17,7 @@ pub struct LayoutContext {
 }
 
 #[derive(Debug)]
+/// store rect data for rendr block
 struct Rect {
     x: f64,
     y: f64,
@@ -95,7 +97,7 @@ impl LayoutContext {
         self.step * (*&store::statics::Number::COLUMN as f64)
     }
     pub fn get_rect_x(&self, position: &usize) -> f64 {
-        (((func::fix_digit(*position as i32) * self.step as i32) as f64) + (self.render_boundary + 1.0))
+        (((util::fix_digit(*position as i32) * self.step as i32) as f64) + (self.render_boundary + 1.0))
     }
     pub fn get_rect_y(&self, position: &usize) -> f64 {
         (round::floor((*position as i32 / store::statics::Number::ROW) as f64, 0) as f64)
