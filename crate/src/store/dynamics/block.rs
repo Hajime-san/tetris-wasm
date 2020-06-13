@@ -4,7 +4,7 @@ use crate::func;
 use crate::store;
 
 #[derive(Debug)]
-pub struct Block {
+pub struct BlockContext {
     positions: store::statics::BlockPosition,
     angle: store::statics::Angle,
     next_angle: store::statics::Angle,
@@ -12,18 +12,7 @@ pub struct Block {
 }
 
 
-// impl Default for Block {
-//     fn default() -> Self {
-//         Self {
-//             positions: store::statics::BLOCKS[store::statics::BlockName::T_mino as usize].number,
-//             angle: store::statics::Angle::Initial,
-//             next_angle: store::statics::Angle::Initial,
-//             block_name: store::statics::BlockName::T_mino,
-//         }
-//     }
-// }
-
-impl Block {
+impl BlockContext {
 
     /*
         constructor

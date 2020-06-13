@@ -15,7 +15,7 @@ macro_rules! console_log {
 }
 
 #[derive(Debug)]
-pub struct Field {
+pub struct FieldContext {
     pub list: Vec<i32>,
     single_rows: Vec<Vec<i32>>,
     complete_row_numbers: Vec<i32>,
@@ -23,7 +23,7 @@ pub struct Field {
     remain_row_numbers: Vec<i32>,
 }
 
-impl Default for Field {
+impl Default for FieldContext {
     fn default() -> Self {
         Self {
             list: default_field_value(),
@@ -35,7 +35,7 @@ impl Default for Field {
     }
 }
 
-impl Field {
+impl FieldContext {
     //
     // get field value methods
     //

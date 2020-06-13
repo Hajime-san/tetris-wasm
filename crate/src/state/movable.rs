@@ -1,9 +1,9 @@
 use crate::func;
 use crate::store;
 
-use store::dynamics::field::Field as GameFieldContext;
+use store::dynamics::field::FieldContext;
 
-pub fn left(field_collection: &GameFieldContext, current_block: &store::statics::BlockPosition) -> bool {
+pub fn left(field_collection: &FieldContext, current_block: &store::statics::BlockPosition) -> bool {
     let mut flag = true;
 
     let field = field_collection.get_list();
@@ -34,7 +34,7 @@ pub fn left(field_collection: &GameFieldContext, current_block: &store::statics:
     flag
 }
 
-pub fn right(field_collection: &GameFieldContext, current_block: &store::statics::BlockPosition) -> bool {
+pub fn right(field_collection: &FieldContext, current_block: &store::statics::BlockPosition) -> bool {
     let mut flag = true;
 
     let field = field_collection.get_list();
@@ -65,7 +65,7 @@ pub fn right(field_collection: &GameFieldContext, current_block: &store::statics
     flag
 }
 
-pub fn down(field_collection: &GameFieldContext, current_block: &store::statics::BlockPosition) -> bool {
+pub fn down(field_collection: &FieldContext, current_block: &store::statics::BlockPosition) -> bool {
     let mut flag = true;
 
     let field = field_collection.get_list();
@@ -100,7 +100,7 @@ pub fn down(field_collection: &GameFieldContext, current_block: &store::statics:
     flag
 }
 
-pub fn rotate(field_collection: &GameFieldContext, tmp_block: &store::statics::BlockPosition) -> bool {
+pub fn rotate(field_collection: &FieldContext, tmp_block: &store::statics::BlockPosition) -> bool {
     let mut left_wall = true;
     let mut right_wall = true;
     let mut down_wall = true;

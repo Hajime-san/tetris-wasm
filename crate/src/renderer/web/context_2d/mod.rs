@@ -1,3 +1,3 @@
 pub mod hud;
-pub mod block;
+pub mod renderer;
 pub mod util;

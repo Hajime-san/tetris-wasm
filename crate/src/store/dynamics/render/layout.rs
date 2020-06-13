@@ -4,7 +4,7 @@ use crate::func;
 use crate::store;
 
 #[derive(Debug)]
-pub struct Field {
+pub struct LayoutContext {
     width: u32,
     height: u32,
     horizon: f64,
@@ -35,7 +35,7 @@ pub struct Text {
     replay: &'static str,
 }
 
-impl Default for Field {
+impl Default for LayoutContext {
     fn default() -> Self {
         Self {
             width: 0,
@@ -72,7 +72,7 @@ impl Default for Text {
 }
 
 
-impl Field {
+impl LayoutContext {
     pub fn get_width(&self) -> u32 {
         self.width
     }

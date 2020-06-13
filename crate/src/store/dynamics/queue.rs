@@ -18,12 +18,12 @@ macro_rules! console_log {
 }
 
 #[derive(Debug)]
-pub struct QueueField {
+pub struct QueueContext {
     list: Vec<i32>,
     line: Vec<i32>,
 }
 
-impl Default for QueueField {
+impl Default for QueueContext {
     fn default() -> Self {
         Self {
             list: default_queue_field_value(),
@@ -32,7 +32,7 @@ impl Default for QueueField {
     }
 }
 
-impl QueueField {
+impl QueueContext {
     pub fn update_queue(&mut self, count: i32) {
         // delete first block
         if count >= 1 {
