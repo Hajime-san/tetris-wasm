@@ -139,24 +139,29 @@ impl FieldContext {
     pub fn drop_row(&mut self) {
 
         // first, drop remainRow
-        if self.remain_row_numbers.len() > 0 {
+        // if self.remain_row_numbers.len() > 0 {
             let mut reverse_num: Vec<i32> = self.remain_row_numbers.iter().rev().cloned().collect();
             let reverse_rows: Vec<Vec<i32>> = self.remain_rows.iter().rev().cloned().collect();
+
 
             for _ in 0..store::statics::Number::COLUMN as usize {
                 // loop
                 for (i, v) in reverse_num.iter().enumerate() {
                     let start = (v * store::statics::Number::ROW) + store::statics::Number::ROW;
 
+
                     if start >= self.list.len() as i32 {
-                        return;
+                        continue;
                     }
 
-                    let check: Vec<i32> = self.list
-                        .iter()
-                        .filter(|&k| k >= &start && k <= &(start + store::statics::Number::ROW - 1))
-                        .cloned()
-                        .collect();
+                    // create index array for each row
+                    let mut check: Vec<i32> = vec![];
+
+                    for (i, _) in self.list.iter().enumerate() {
+                        if i as i32 >= start && i as i32 <= (start + store::statics::Number::ROW - 1) {
+                            check.push(i as i32);
+                        }
+                    }
 
                     if check
                         .iter()
@@ -175,13 +180,13 @@ impl FieldContext {
                 // increment
                 for j in 0..reverse_num.len() as usize {
                     if reverse_num[j as usize] >= store::statics::Number::COLUMN {
-                        return;
+                        continue;
                     }
 
                     reverse_num[j as usize] += 1;
                 }
             }
-        }
+        // }
     }
 }
 
